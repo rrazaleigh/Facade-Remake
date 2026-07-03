@@ -22,6 +22,7 @@ const MODEL   = "llama3.2:3b"
 @onready var http          : HTTPRequest     = $HTTPRequest
 @onready var prev_char_btn : Button          = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Switch
 @onready var next_char_btn : Button          = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Switch2
+@onready var close_btn     : Button          = $CloseButton
 
 # ── GAME STATE ─────────────────────────────────────────────────────────────────
 
@@ -48,6 +49,7 @@ var _narrative_log       : Array = []
 var _last_speaker        : String = "dylan"
 var _viewing_character   : String = "dylan"
 var _char_emotions       : Dictionary = {"dylan": "neutral", "jasmine": "neutral"}
+var _room                : Node2D = null  # set by room.gd when used as overlay UI
 
 const MAX_CONSECUTIVE    : int   = 3
 const BEAT_ORDER = [
@@ -75,14 +77,86 @@ func _ready():
 	player_input.text_submitted.connect(_on_send)
 	prev_char_btn.pressed.connect(_on_prev_char)
 	next_char_btn.pressed.connect(_on_next_char)
+	if close_btn:
+		close_btn.pressed.connect(_on_close)
+		close_btn.visible = false
 
 	_update_character_display()
 	_update_debug()
+
+	# When used as an overlay inside room.tscn, don't auto-start the conversation.
+	if Globals.room_active:
+		status_bar.text = "Walk up to someone and press E to talk."
+		return
+
 	var pname = Globals.player_name
 	_add_line("SCENE", "Dylan and Jasmine invited %s over for dinner. Dylan greets %s at the door; Jasmine is in the kitchen cooking." % [pname, pname], Color.YELLOW)
 	status_bar.text = "Type something to begin..."
 
+# ── ROOM INTEGRATION ───────────────────────────────────────────────────────────
+
+func set_room(room: Node2D):
+	_room = room
+	if close_btn:
+		close_btn.visible = true
+
+func start_dialogue(character_name: String):
+	# Reset per-conversation state
+	conversation_history.clear()
+	history_summary = ""
+	waiting = false
+	_pending_user_index = -1
+	_game_over = false
+	_scene_transition = ""
+	_continue_count = 0
+	_narrative_log.clear()
+	_last_player_tone = "neutral"
+	game_state.turn = 0
+	game_state.current_beat = "arrival"
+	game_state.dylan_trust = 50
+	game_state.dylan_anxiety = 30
+	game_state.dylan_tension = 40
+	game_state.jasmine_trust = 50
+	game_state.jasmine_anxiety = 30
+	game_state.jasmine_tension = 40
+
+	# Clear existing labels
+	for child in history_vbox.get_children():
+		child.queue_free()
+
+	var speaker = character_name.to_lower()
+	if speaker not in ["dylan", "jasmine"]:
+		speaker = "dylan"
+	_last_speaker = speaker
+	_viewing_character = speaker
+
+	var speaker_name = "Dylan" if speaker == "dylan" else "Jasmine"
+	var pname = Globals.player_name if Globals.player_name != "" else "Friend"
+	_add_line("SCENE", "You sit down with %s. The dinner party hums in the background." % speaker_name, Color.YELLOW)
+	status_bar.text = "Type something to %s..." % speaker_name
+	_update_character_display()
+	_update_debug()
+
 # ── INPUT ──────────────────────────────────────────────────────────────────────
+
+func _input(event: InputEvent):
+	# Press Escape (ui_cancel) to close the dialogue box and return to the room.
+	if Globals.room_active and visible and event.is_action_pressed("ui_cancel"):
+		_on_close()
+		get_viewport().set_input_as_handled()
+
+func _on_close():
+	# Stop any in-flight LLM request so a late response doesn't reopen the UI.
+	if http and waiting:
+		http.cancel_request()
+	waiting = false
+	_set_waiting(false)
+
+	if _room:
+		_room.end_dialogue()
+	else:
+		# Direct mode: just hide the UI
+		visible = false
 
 func _on_send(_t = ""):
 	print("send triggered")
@@ -476,6 +550,7 @@ func _advance_drama(signal_val: String):
 			return
 
 func _trigger_game_over():
+	Globals.room_active = false
 	Globals.ending_name = "KICKED OUT"
 	Globals.ending_text = "Dylan had enough. Before you could say another word, he showed you the door. You're out on the street, the night air cold against your face. Some doors don't open twice."
 	Globals.dylan_trust     = game_state.dylan_trust
@@ -508,6 +583,7 @@ func _trigger_ending(beat_name: String):
 			"The night reached its natural end. Goodbyes were said at the door. Whatever happens next is between Dylan and Jasmine — the player was just a witness."]
 	}
 	var data = endings.get(beat_name, ["ENDING", "The night came to a close."])
+	Globals.room_active = false
 	Globals.ending_name = data[0]
 	Globals.ending_text = data[1]
 	Globals.dylan_trust     = game_state.dylan_trust

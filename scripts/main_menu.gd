@@ -12,4 +12,4 @@ func _on_start():
 	if name == "":
 		name = "Friend"
 	Globals.player_name = name
-	get_tree().change_scene_to_file("res://main.tscn")
+	get_tree().change_scene_to_file("res://room.tscn")

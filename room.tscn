@@ -1,0 +1,122 @@
+[gd_scene load_steps=9 format=3 uid="uid://yma1f3hmmehr"]
+
+[ext_resource type="Script" uid="uid://3iuu9nfydr3u1" path="res://scripts/room.gd" id="1_ayl91"]
+[ext_resource type="Texture2D" uid="uid://dtel87la7veqy" path="res://graphics/scenes/diningroom.jpg" id="2_3hmme"]
+[ext_resource type="Script" uid="uid://w5hos2huhr4sg" path="res://scripts/player.gd" id="3_hr4sg"]
+[ext_resource type="Script" uid="uid://622auijmtupti" path="res://scripts/npc.gd" id="4_mtupt"]
+[ext_resource type="PackedScene" uid="uid://brs2c46m5h22y" path="res://main.tscn" id="5_5h22y"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jx02s"]
+size = Vector2(1920, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4y7ab"]
+size = Vector2(60, 120)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_npc01"]
+size = Vector2(70, 160)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wall"]
+size = Vector2(40, 1080)
+
+[node name="Room" type="Node2D"]
+script = ExtResource("1_ayl91")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(960, 540)
+scale = Vector2(1.88, 1.88)
+texture = ExtResource("2_3hmme")
+
+[node name="Floor" type="StaticBody2D" parent="."]
+position = Vector2(960, 950)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor"]
+shape = SubResource("RectangleShape2D_jx02s")
+
+[node name="LeftWall" type="StaticBody2D" parent="."]
+position = Vector2(-20, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="RightWall" type="StaticBody2D" parent="."]
+position = Vector2(1940, 540)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall"]
+shape = SubResource("RectangleShape2D_wall")
+
+[node name="Player" type="CharacterBody2D" parent="."]
+position = Vector2(300, 860)
+script = ExtResource("3_hr4sg")
+
+[node name="Polygon2D" type="Polygon2D" parent="Player"]
+color = Color(0.2, 0.6, 1, 1)
+polygon = PackedVector2Array(-30, -60, 30, -60, 30, 60, -30, 60)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_4y7ab")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position = Vector2(0, -120)
+limit_left = 0
+limit_right = 1920
+limit_top = 0
+limit_bottom = 1080
+position_smoothing_enabled = true
+
+[node name="Dylan" type="Area2D" parent="." groups=["npc"]]
+position = Vector2(700, 840)
+script = ExtResource("4_mtupt")
+character_name = "dylan"
+display_name = "Dylan"
+
+[node name="Polygon2D" type="Polygon2D" parent="Dylan"]
+color = Color(0.9, 0.4, 0.3, 1)
+polygon = PackedVector2Array(-35, -80, 35, -80, 35, 80, -35, 80)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Dylan"]
+shape = SubResource("RectangleShape2D_npc01")
+
+[node name="PromptLabel" type="Label" parent="Dylan"]
+offset_left = -80.0
+offset_top = -120.0
+offset_right = 80.0
+offset_bottom = -90.0
+horizontal_alignment = 1
+
+[node name="Jasmine" type="Area2D" parent="." groups=["npc"]]
+position = Vector2(1200, 840)
+script = ExtResource("4_mtupt")
+character_name = "jasmine"
+display_name = "Jasmine"
+
+[node name="Polygon2D" type="Polygon2D" parent="Jasmine"]
+color = Color(0.9, 0.5, 0.7, 1)
+polygon = PackedVector2Array(-30, -75, 30, -75, 30, 75, -30, 75)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Jasmine"]
+shape = SubResource("RectangleShape2D_npc01")
+
+[node name="PromptLabel" type="Label" parent="Jasmine"]
+offset_left = -80.0
+offset_top = -115.0
+offset_right = 80.0
+offset_bottom = -85.0
+horizontal_alignment = 1
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Main" parent="CanvasLayer" instance=ExtResource("5_5h22y")]
+visible = false
+
+[node name="InteractPrompt" type="Label" parent="CanvasLayer"]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -300.0
+offset_top = -100.0
+offset_right = 300.0
+offset_bottom = -50.0
+horizontal_alignment = 1
+vertical_alignment = 1
