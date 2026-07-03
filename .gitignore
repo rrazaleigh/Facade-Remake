@@ -13,3 +13,14 @@ desktop.ini
 # Editor data
 .cache/
 .user/
+
+# Godot project-specific editor data
+.godot/
+
+# Temp / backup files
+*.tmp
+*.blend1
+*.blend2
+
+# Secrets
+secrets.cfg
