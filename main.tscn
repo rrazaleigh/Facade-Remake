@@ -1,0 +1,156 @@
+[gd_scene format=3 uid="uid://brs2c46m5h22y"]
+
+[ext_resource type="Script" uid="uid://os1cmiogot8n" path="res://scripts/main.gd" id="1_ig7tw"]
+[ext_resource type="Texture2D" uid="uid://dtel87la7veqy" path="res://graphics/scenes/diningroom.jpg" id="2_0xm2m"]
+
+[node name="Main" type="Control" unique_id=853392392]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ig7tw")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1429146160]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("2_0xm2m")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1378446626]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.101960786, 0.101960786, 0.18039216, 0.78431374)
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1721687753]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1399038570]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=325934394]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Dialogue" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1020120260]
+layout_mode = 2
+
+[node name="DialogueHistory" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Dialogue" unique_id=224029189]
+custom_minimum_size = Vector2(1110, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 3
+
+[node name="HistoryVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Dialogue/DialogueHistory" unique_id=1084680318]
+custom_minimum_size = Vector2(1100, 843)
+layout_mode = 2
+
+[node name="Character" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer" unique_id=1953280651]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Character" unique_id=1620139811]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer" unique_id=2001857768]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer" unique_id=1994921370]
+layout_mode = 2
+alignment = 1
+
+[node name="Switch" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=6958476]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+text = "<"
+
+[node name="Characters" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=834331560]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="CharacterPanel" type="PanelContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Characters" unique_id=118993004]
+layout_mode = 2
+
+[node name="CharacterName" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Characters" unique_id=1650329130]
+layout_mode = 2
+
+[node name="EmotionLabel" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Characters" unique_id=1418239563]
+layout_mode = 2
+
+[node name="Switch2" type="Button" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=1728923627]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+text = ">"
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer" unique_id=849045276]
+custom_minimum_size = Vector2(640, 768)
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=62300493]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer" unique_id=2040711581]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="InputRow" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=1813871461]
+custom_minimum_size = Vector2(1100, 0)
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/InputRow" unique_id=843679236]
+custom_minimum_size = Vector2(1100, 0)
+layout_mode = 2
+
+[node name="StatusBar" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/InputRow/VBoxContainer" unique_id=1968640649]
+layout_mode = 2
+
+[node name="PlayerInput" type="LineEdit" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/InputRow/VBoxContainer" unique_id=1739729530]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+placeholder_text = "type here..."
+
+[node name="ToneLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/InputRow/VBoxContainer" unique_id=1095992023]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=2083594561]
+layout_mode = 2
+
+[node name="StateDebug" type="HBoxContainer" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer" unique_id=1551352994]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_constants/separation = 100
+alignment = 1
+
+[node name="TrustLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug" unique_id=423771497]
+layout_mode = 2
+
+[node name="TensionLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug" unique_id=1989210403]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="AnxietyLabel" type="Label" parent="MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug" unique_id=720032453]
+layout_mode = 2
+horizontal_alignment = 2
+
+[node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=393484170]
+timeout = 60.0

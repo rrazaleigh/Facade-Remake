@@ -1,0 +1,15 @@
+# Godot exports
+export/
+exports/
+
+# Godot imported assets
+.import/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor data
+.cache/
+.user/

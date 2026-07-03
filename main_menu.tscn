@@ -1,0 +1,102 @@
+[gd_scene format=3 uid="uid://b1640rfoo535q"]
+
+[ext_resource type="Texture2D" uid="uid://kf8p2o72g6ka" path="res://graphics/UI/Dylan's Night.png" id="1_06t4h"]
+[ext_resource type="Script" uid="uid://bgp4d1ponefuh" path="res://scripts/main_menu.gd" id="1_7vrkn"]
+
+[sub_resource type="FontVariation" id="FontVariation_06t4h"]
+
+[sub_resource type="Theme" id="Theme_7vrkn"]
+default_font = SubResource("FontVariation_06t4h")
+default_font_size = 80
+
+[sub_resource type="Theme" id="Theme_06t4h"]
+
+[node name="Control" type="Control" unique_id=94318179]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7vrkn")
+
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1073132668]
+layout_mode = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+color = Color(0.101960786, 0.101960786, 0.18039216, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="ColorRect" unique_id=1244654031]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -20.0
+offset_right = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer" unique_id=173058571]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Title Card" type="CenterContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=2109877189]
+clip_contents = true
+custom_minimum_size = Vector2(1920, 0)
+layout_mode = 2
+
+[node name="Dylan\'s Night" type="TextureRect" parent="ColorRect/MarginContainer/VBoxContainer/Title Card" unique_id=277962249]
+layout_mode = 2
+texture = ExtResource("1_06t4h")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=1086531445]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="Welcome Text" type="RichTextLabel" parent="ColorRect/MarginContainer/VBoxContainer/VBoxContainer" unique_id=1464786958]
+custom_minimum_size = Vector2(1080, 100)
+layout_mode = 2
+size_flags_horizontal = 4
+theme = SubResource("Theme_7vrkn")
+bbcode_enabled = true
+text = "[center]Welcome[/center]"
+fit_content = true
+scroll_active = false
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/VBoxContainer" unique_id=467071202]
+layout_mode = 2
+alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="ColorRect/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer" unique_id=360004659]
+custom_minimum_size = Vector2(600, 100)
+layout_mode = 2
+theme = SubResource("Theme_06t4h")
+theme_override_font_sizes/font_size = 60
+placeholder_text = "Name..."
+alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/VBoxContainer" unique_id=657500106]
+layout_mode = 2
+alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ColorRect/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1729536268]
+custom_minimum_size = Vector2(1100, 400)
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 60
+bbcode_enabled = true
+text = "[center]Your friend Dylan and his current partner Jasmine invited you over for dinner. Is this just another night, or do they have things they want to talk about?[/center]"
+scroll_active = false
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer/VBoxContainer" unique_id=842106614]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="ColorRect/MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer3" unique_id=1517818100]
+custom_minimum_size = Vector2(300, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 50
+text = "START"
