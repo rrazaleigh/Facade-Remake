@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-DramaLoader="*uid://ww1ui1u4l11a"
+DramaLoader="*res://scripts/drama_loader.gd"
 Globals="*res://scripts/globals.gd"
 
 [display]

@@ -51,8 +51,10 @@ var _char_emotions       : Dictionary = {"dylan": "neutral", "jasmine": "neutral
 
 const MAX_CONSECUTIVE    : int   = 3
 const BEAT_ORDER = [
-	"arrival", "small_talk", "cracks_showing", "the_confession",
-	"jasmine_feels_it", "ending_honest_growth", "ending_false_comfort",
+	"arrival", "small_talk", "cracks_showing",
+	"hostile_undercurrent", "hostile_escalation",
+	"the_confession", "jasmine_feels_it",
+	"ending_honest_growth", "ending_false_comfort",
 	"ending_return_to_past", "ending_toxic_spiral",
 	"ending_plot_twist", "resolution"
 ]
@@ -330,10 +332,17 @@ func _on_response(result, response_code, _headers, body):
 					failed = true
 				else:
 					content = content.strip_edges()
-					# Strip markdown code fences if present
-					if content.begins_with("```"):
-						content = content.split("\n", false, 1)[1]
-						content = content.rstrip("`").strip_edges()
+				# Strip markdown code fences if present
+				if content.begins_with("```"):
+					var start = content.find("\n", 3)
+					if start != -1:
+						content = content.substr(start + 1)
+						var end = content.rfind("```")
+						if end != -1:
+							content = content.substr(0, end)
+					else:
+						content = content.trim_prefix("```").rstrip("`")
+					content = content.strip_edges()
 
 					var npc = JSON.parse_string(content)
 					if npc == null:
@@ -402,13 +411,18 @@ func _apply_response(r: Dictionary):
 	var signal_val = r.get("drama_signal", "none")
 	if signal_val == null:
 		signal_val = "none"
-	if signal_val == "game_over" or game_state.dylan_trust <= 5:
-		_compress_history(dialogue)
-		_trigger_game_over()
+	if signal_val == "game_over" or game_state.dylan_trust <= 5 or game_state.jasmine_trust <= 5 or game_state.dylan_tension >= 95 or game_state.jasmine_tension >= 95:
+		_compress_history(dialogue, speaker)
+		if signal_val == "game_over":
+			_trigger_game_over()
+		elif game_state.dylan_trust <= 5:
+			_trigger_game_over("LOST TRUST", "Dylan doesn't trust you anymore. Whatever connection you once had, it's gone now. He looks at you like a stranger, and the night can't end soon enough.")
+		else:
+			_trigger_game_over("TENSION BOILED OVER", "The evening became too much. The air was thick with things left unsaid, and somewhere along the way, the night broke. There was no coming back from it.")
 		return
 
 	_advance_drama(signal_val)
-	_compress_history(dialogue)
+	_compress_history(dialogue, speaker)
 
 	# Continue: let the LLM speak again without waiting for the player
 	if signal_val == "continue" and _continue_count < MAX_CONSECUTIVE:
@@ -475,9 +489,11 @@ func _advance_drama(signal_val: String):
 				_set_transition(next)
 			return
 
-func _trigger_game_over():
-	Globals.ending_name = "KICKED OUT"
-	Globals.ending_text = "Dylan had enough. Before you could say another word, he showed you the door. You're out on the street, the night air cold against your face. Some doors don't open twice."
+func _trigger_game_over(ending_name := "KICKED OUT", ending_text := ""):
+	if ending_text == "":
+		ending_text = "Dylan had enough. Before you could say another word, he showed you the door. You're out on the street, the night air cold against your face. Some doors don't open twice."
+	Globals.ending_name = ending_name
+	Globals.ending_text = ending_text
 	Globals.dylan_trust     = game_state.dylan_trust
 	Globals.dylan_anxiety   = game_state.dylan_anxiety
 	Globals.dylan_tension   = game_state.dylan_tension
@@ -520,8 +536,8 @@ func _trigger_ending(beat_name: String):
 
 # ── HISTORY COMPRESSION ────────────────────────────────────────────────────────
 
-func _compress_history(last_dialogue: String):
-	conversation_history.append({"role": "assistant", "content": last_dialogue})
+func _compress_history(last_dialogue: String, speaker: String = "dylan"):
+	conversation_history.append({"role": "assistant", "speaker": speaker, "content": last_dialogue})
 
 	if conversation_history.size() > 10:
 		var old   = conversation_history.slice(0, conversation_history.size() - 6)
@@ -529,9 +545,12 @@ func _compress_history(last_dialogue: String):
 		var lines = []
 		for i in range(0, old.size() - 1, 2):
 			if i + 1 < old.size():
-				lines.append('%s: "%s" → Dylan: "%s"' % [
+				var spk = old[i + 1].get("speaker", "dylan")
+				var spk_name = "Dylan" if spk == "dylan" else "Jasmine"
+				lines.append('%s: "%s" → %s: "%s"' % [
 					pname,
 					old[i].get("content", "").left(60),
+					spk_name,
 					old[i + 1].get("content", "").left(60)
 				])
 		history_summary = "\n".join(lines)
@@ -539,6 +558,14 @@ func _compress_history(last_dialogue: String):
 			conversation_history.size() - 6,
 			conversation_history.size()
 		)
+
+	# Prevent memory leak: trim oldest labels when they exceed limit
+	var excess = history_vbox.get_child_count() - 40
+	if excess > 0:
+		for j in range(min(excess, 10)):
+			var child = history_vbox.get_child(0)
+			history_vbox.remove_child(child)
+			child.queue_free()
 
 # ── UI HELPERS ─────────────────────────────────────────────────────────────────
 
