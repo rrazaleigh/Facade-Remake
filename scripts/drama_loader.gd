@@ -29,17 +29,11 @@ func _load_beats():
 		var lines      = section.split("\n", false)
 		var beat_name  = lines[0].strip_edges().to_lower()
 		var directive  = ""
-		var thresholds = {}
 		var characters = []
 
 		for i in range(1, lines.size()):
 			var line = lines[i].strip_edges()
-			if line.begins_with("THRESHOLD:"):
-				var t     = line.replace("THRESHOLD:", "").strip_edges()
-				var parts = t.split("→")
-				if parts.size() == 2:
-					thresholds[parts[0].strip_edges()] = parts[1].strip_edges()
-			elif line.begins_with("CHARACTERS:"):
+			if line.begins_with("CHARACTERS:"):
 				var raw_chars = line.replace("CHARACTERS:", "").strip_edges()
 				for ch in raw_chars.split(","):
 					characters.append(ch.strip_edges())
@@ -48,16 +42,12 @@ func _load_beats():
 
 		beats[beat_name] = {
 			"directive":  directive.strip_edges(),
-			"thresholds": thresholds,
 			"characters": characters
 		}
 		beat_order.append(beat_name)
 
 func get_directive(beat: String) -> String:
 	return beats.get(beat, {}).get("directive", "")
-
-func get_thresholds(beat: String) -> Dictionary:
-	return beats.get(beat, {}).get("thresholds", {})
 
 func get_characters(beat: String) -> Array:
 	return beats.get(beat, {}).get("characters", [])

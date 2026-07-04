@@ -23,6 +23,21 @@ const MODEL   = "llama3.2:3b"
 @onready var prev_char_btn : Button          = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Switch
 @onready var next_char_btn : Button          = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Switch2
 
+# ── DEBUG MENU REFS ───────────────────────────────────────────────────────────
+
+@onready var debug_window      : Window       = $Window
+@onready var beat_option       : OptionButton = $Window/VBoxContainer/BeatHBox/BeatOptionButton
+@onready var set_beat_btn      : Button       = $Window/VBoxContainer/BeatHBox/SetBeatButton
+@onready var dylan_trust_sb    : SpinBox      = $Window/VBoxContainer/DylanTrust/DylanTrustSpinBox
+@onready var dylan_anxiety_sb  : SpinBox      = $Window/VBoxContainer/DylanAnxiety/DylanAnxietySpinBox
+@onready var dylan_tension_sb  : SpinBox      = $Window/VBoxContainer/DylanTension/DylanTensionSpinBox
+@onready var jasmine_trust_sb  : SpinBox      = $Window/VBoxContainer/JasmineTrust/JasmineTrustSpinBox
+@onready var jasmine_anxiety_sb: SpinBox      = $Window/VBoxContainer/JasmineAnxiety/JasmineAnxietySpinBox
+@onready var jasmine_tension_sb: SpinBox      = $Window/VBoxContainer/JasmineTension/JasmineTensionSpinBox
+@onready var ending_option     : OptionButton = $Window/VBoxContainer/EndingHBox/EndingOptionButton
+@onready var trigger_end_btn   : Button       = $Window/VBoxContainer/EndingHBox/TriggerEndingButton
+@onready var close_debug_btn   : Button       = $Window/VBoxContainer/CloseButton
+
 # ── GAME STATE ─────────────────────────────────────────────────────────────────
 
 var game_state = {
@@ -78,11 +93,34 @@ func _ready():
 	prev_char_btn.pressed.connect(_on_prev_char)
 	next_char_btn.pressed.connect(_on_next_char)
 
+	# Debug menu
+	for b in BEAT_ORDER:
+		beat_option.add_item(b)
+	beat_option.select(BEAT_ORDER.find(game_state.current_beat))
+	for e in ["ending_honest_growth", "ending_false_comfort", "ending_return_to_past", "ending_toxic_spiral", "ending_plot_twist", "resolution"]:
+		ending_option.add_item(e)
+	set_beat_btn.pressed.connect(_on_debug_set_beat)
+	dylan_trust_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_trust"))
+	dylan_anxiety_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_anxiety"))
+	dylan_tension_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_tension"))
+	jasmine_trust_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_trust"))
+	jasmine_anxiety_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_anxiety"))
+	jasmine_tension_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_tension"))
+	trigger_end_btn.pressed.connect(_on_debug_trigger_ending)
+	close_debug_btn.pressed.connect(_on_debug_close)
+	debug_window.visibility_changed.connect(_sync_debug_menu)
+
 	_update_character_display()
 	_update_debug()
 	var pname = Globals.player_name
 	_add_line("SCENE", "Dylan and Jasmine invited %s over for dinner. Dylan greets %s at the door; Jasmine is in the kitchen cooking." % [pname, pname], Color.YELLOW)
 	status_bar.text = "Type something to begin..."
+
+func _input(event):
+	if event is InputEventKey and event.keycode == KEY_F3 and event.pressed and not event.echo:
+		debug_window.visible = not debug_window.visible
+		if debug_window.visible:
+			_sync_debug_menu()
 
 # ── INPUT ──────────────────────────────────────────────────────────────────────
 
@@ -158,6 +196,42 @@ func _handle_debug_command(cmd: String):
 
 	else:
 		_add_line("DEBUG", "Unknown command. Try !help", Color.RED)
+
+# ── DEBUG MENU HANDLERS ────────────────────────────────────────────────────────
+
+func _on_debug_set_beat():
+	var beat = BEAT_ORDER[beat_option.selected]
+	var dir = DramaLoader.get_directive(beat)
+	if dir != "":
+		game_state.current_beat = beat
+		_add_line("— SCENE —", dir, Color.YELLOW)
+		_update_debug()
+	else:
+		_add_line("DEBUG", "Unknown beat: %s" % beat, Color.RED)
+
+func _on_debug_state_changed(value: float, key: String):
+	game_state[key] = clampi(int(value), 0, 100)
+	_update_debug()
+
+func _on_debug_trigger_ending():
+	var text = ending_option.get_item_text(ending_option.selected)
+	_handle_debug_command("!ending=" + text)
+
+func _on_debug_close():
+	debug_window.visible = false
+
+func _sync_debug_menu():
+	if not debug_window.visible:
+		return
+	dylan_trust_sb.set_value_no_signal(game_state.dylan_trust)
+	dylan_anxiety_sb.set_value_no_signal(game_state.dylan_anxiety)
+	dylan_tension_sb.set_value_no_signal(game_state.dylan_tension)
+	jasmine_trust_sb.set_value_no_signal(game_state.jasmine_trust)
+	jasmine_anxiety_sb.set_value_no_signal(game_state.jasmine_anxiety)
+	jasmine_tension_sb.set_value_no_signal(game_state.jasmine_tension)
+	var idx = BEAT_ORDER.find(game_state.current_beat)
+	if idx != -1:
+		beat_option.select(idx)
 
 # ── LLM CALL ───────────────────────────────────────────────────────────────────
 
@@ -441,7 +515,6 @@ func _set_transition(next_beat: String):
 func _advance_drama(signal_val: String):
 	var beat = game_state.current_beat
 
-	# LLM-signalled advancement is the primary driver — the LLM has full narrative context
 	if signal_val in ["beat_complete", "escalate"]:
 		var idx = BEAT_ORDER.find(beat)
 		if idx != -1 and idx < BEAT_ORDER.size() - 1:
@@ -455,39 +528,6 @@ func _advance_drama(signal_val: String):
 			return
 		elif beat == "kicked_out":
 			_trigger_game_over()
-			return
-
-	# Turn-based timeout fallback when the LLM doesn't signal advancement
-	var thresholds = DramaLoader.get_thresholds(beat)
-	for condition in thresholds:
-		var parts = condition.split(" ")
-		if parts.size() < 3:
-			continue
-		var variable = parts[0].strip_edges()
-		var operator = parts[1].strip_edges()
-		var value    = int(parts[2].strip_edges())
-		var current  = game_state.get(variable, -1)
-		if current == -1:
-			continue
-
-		var triggered = (operator == ">"  and current >  value) or \
-						(operator == ">=" and current >= value) or \
-						(operator == "<"  and current <  value) or \
-						(operator == "<=" and current <= value)
-
-		if triggered:
-			var next = thresholds[condition].strip_edges()
-			if next != beat:
-				if next == "kicked_out":
-					_set_transition(next)
-					_trigger_game_over()
-					return
-				if next.begins_with("ending_") or next == "resolution":
-					_set_transition(next)
-					_add_line("— SCENE —", _scene_transition, Color.YELLOW)
-					_trigger_ending(next)
-					return
-				_set_transition(next)
 			return
 
 func _trigger_game_over(ending_name := "KICKED OUT", ending_text := ""):
@@ -622,3 +662,5 @@ func _update_debug():
 	anxiety_label.text  = "Anxiety: %d" % game_state.get(prefix + "_anxiety",   0)
 	tension_label.text  = "Tension: %d" % game_state.get(prefix + "_tension",   0)
 	player_tone_label.text = "Player tone: %s" % _last_player_tone
+	if debug_window.visible:
+		_sync_debug_menu()

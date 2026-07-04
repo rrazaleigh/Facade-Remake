@@ -147,3 +147,157 @@ horizontal_alignment = 2
 
 [node name="HTTPRequest" type="HTTPRequest" parent="." unique_id=393484170]
 timeout = 60.0
+
+[node name="Window" type="Window" parent="." unique_id=493345158]
+oversampling_override = 1.0
+title = "DEBUG"
+initial_position = 1
+size = Vector2i(380, 480)
+visible = false
+transient = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Window"]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 4
+
+[node name="Title" type="Label" parent="Window/VBoxContainer"]
+layout_mode = 2
+text = "=== DEBUG MENU ==="
+horizontal_alignment = 1
+
+[node name="BeatHBox" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="BeatOptionButton" type="OptionButton" parent="Window/VBoxContainer/BeatHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SetBeatButton" type="Button" parent="Window/VBoxContainer/BeatHBox"]
+layout_mode = 2
+text = "Set Beat"
+
+[node name="BeatSep" type="HSeparator" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="StateLabel" type="Label" parent="Window/VBoxContainer"]
+layout_mode = 2
+text = "State (0-100):"
+
+[node name="DylanTrust" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="DylanTrustLabel" type="Label" parent="Window/VBoxContainer/DylanTrust"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Dylan Trust:"
+
+[node name="DylanTrustSpinBox" type="SpinBox" parent="Window/VBoxContainer/DylanTrust"]
+layout_mode = 2
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 50.0
+size_flags_horizontal = 3
+
+[node name="DylanAnxiety" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="DylanAnxietyLabel" type="Label" parent="Window/VBoxContainer/DylanAnxiety"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Dylan Anxiety:"
+
+[node name="DylanAnxietySpinBox" type="SpinBox" parent="Window/VBoxContainer/DylanAnxiety"]
+layout_mode = 2
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 30.0
+size_flags_horizontal = 3
+
+[node name="DylanTension" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="DylanTensionLabel" type="Label" parent="Window/VBoxContainer/DylanTension"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Dylan Tension:"
+
+[node name="DylanTensionSpinBox" type="SpinBox" parent="Window/VBoxContainer/DylanTension"]
+layout_mode = 2
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 40.0
+size_flags_horizontal = 3
+
+[node name="JasmineTrust" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="JasmineTrustLabel" type="Label" parent="Window/VBoxContainer/JasmineTrust"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Jasmine Trust:"
+
+[node name="JasmineTrustSpinBox" type="SpinBox" parent="Window/VBoxContainer/JasmineTrust"]
+layout_mode = 2
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 50.0
+size_flags_horizontal = 3
+
+[node name="JasmineAnxiety" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="JasmineAnxietyLabel" type="Label" parent="Window/VBoxContainer/JasmineAnxiety"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Jasmine Anxiety:"
+
+[node name="JasmineAnxietySpinBox" type="SpinBox" parent="Window/VBoxContainer/JasmineAnxiety"]
+layout_mode = 2
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 30.0
+size_flags_horizontal = 3
+
+[node name="JasmineTension" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="JasmineTensionLabel" type="Label" parent="Window/VBoxContainer/JasmineTension"]
+layout_mode = 2
+custom_minimum_size = Vector2(120, 0)
+text = "Jasmine Tension:"
+
+[node name="JasmineTensionSpinBox" type="SpinBox" parent="Window/VBoxContainer/JasmineTension"]
+layout_mode = 2
+min_value = 0.0
+max_value = 100.0
+step = 1.0
+value = 40.0
+size_flags_horizontal = 3
+
+[node name="StateSep" type="HSeparator" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="EndingHBox" type="HBoxContainer" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="EndingOptionButton" type="OptionButton" parent="Window/VBoxContainer/EndingHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TriggerEndingButton" type="Button" parent="Window/VBoxContainer/EndingHBox"]
+layout_mode = 2
+text = "Trigger Ending"
+
+[node name="EndSep" type="HSeparator" parent="Window/VBoxContainer"]
+layout_mode = 2
+
+[node name="CloseButton" type="Button" parent="Window/VBoxContainer"]
+layout_mode = 2
+text = "Close Debug Menu"
