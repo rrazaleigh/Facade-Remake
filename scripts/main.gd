@@ -344,12 +344,12 @@ func _on_response(result, response_code, _headers, body):
 						content = content.trim_prefix("```").rstrip("`")
 					content = content.strip_edges()
 
-					var npc = JSON.parse_string(content)
-					if npc == null:
-						_add_line("Dylan", content, Color.WHITE)
-					else:
-						_apply_response(npc)
-						return
+				var npc = JSON.parse_string(content)
+				if npc == null:
+					_add_line("Dylan", content, Color.WHITE)
+				else:
+					_apply_response(npc)
+					return
 
 	if failed and _pending_user_index != -1:
 		conversation_history.remove_at(_pending_user_index)
@@ -457,22 +457,23 @@ func _advance_drama(signal_val: String):
 			_trigger_game_over()
 			return
 
-	# Turn-based timeout fallback — only advances if the conversation is stuck.
-	# State thresholds are ignored: only the LLM's narrative judgment drives progression.
+	# Turn-based timeout fallback when the LLM doesn't signal advancement
 	var thresholds = DramaLoader.get_thresholds(beat)
 	for condition in thresholds:
 		var parts = condition.split(" ")
 		if parts.size() < 3:
 			continue
 		var variable = parts[0].strip_edges()
-		if variable != "turn":
-			continue
 		var operator = parts[1].strip_edges()
 		var value    = int(parts[2].strip_edges())
-		var current  = game_state.get(variable, 0)
+		var current  = game_state.get(variable, -1)
+		if current == -1:
+			continue
 
 		var triggered = (operator == ">"  and current >  value) or \
-						(operator == ">=" and current >= value)
+						(operator == ">=" and current >= value) or \
+						(operator == "<"  and current <  value) or \
+						(operator == "<=" and current <= value)
 
 		if triggered:
 			var next = thresholds[condition].strip_edges()

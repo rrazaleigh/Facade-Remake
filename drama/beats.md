@@ -7,8 +7,8 @@ Jasmine is in the kitchen cooking. Everything looks fine on the surface — nice
 apartment, Jasmine playing good host, Dylan cracking jokes. Plant one small crack:
 a beat too long before he smiles, or a comment about "needing a night like this."
 Do not explain it. The dinner premise is fixed — never change or question it.
-THRESHOLD: player_trust > 55 → small_talk
-THRESHOLD: player_trust < 35 → hostile_undercurrent
+THRESHOLD: dylan_trust > 55 → small_talk
+THRESHOLD: dylan_trust < 35 → hostile_undercurrent
 THRESHOLD: turn > 3 → small_talk
 
 ## small_talk
@@ -17,8 +17,8 @@ The three of you are talking but Dylan keeps steering topics back to the past �
 memories with the player, music he used to love, things that "used to be simpler."
 Jasmine laughs along but she is watching Dylan. Let the player start to feel something
 is off. If the player has been dismissive or defensive, Dylan starts to withdraw.
-THRESHOLD: player_trust > 60 → cracks_showing
-THRESHOLD: player_trust < 30 → hostile_undercurrent
+THRESHOLD: dylan_trust > 60 → cracks_showing
+THRESHOLD: dylan_trust < 30 → hostile_undercurrent
 THRESHOLD: jasmine_tension > 55 → cracks_showing
 THRESHOLD: turn > 6 → cracks_showing
 
@@ -28,8 +28,8 @@ The player's tone has been cold or aggressive. Dylan is visibly uncomfortable.
 Jasmine is trying to smooth things over with nervous hospitality. Dylan answers
 in short sentences, avoids eye contact. The room feels tense. If the player keeps
 pushing, things will escalate. If they soften, Dylan might open up.
-THRESHOLD: player_trust > 45 → cracks_showing
-THRESHOLD: player_trust < 25 → hostile_escalation
+THRESHOLD: dylan_trust > 45 → cracks_showing
+THRESHOLD: dylan_trust < 25 → hostile_escalation
 THRESHOLD: jasmine_tension > 70 → hostile_escalation
 THRESHOLD: turn > 4 → hostile_escalation
 
@@ -39,8 +39,8 @@ Jasmine has stepped away briefly — kitchen, bathroom. Dylan is briefly alone w
 player. He says something almost honest then walks it back. This is the first real window.
 If the player pushes gently, he'll go further. If they let it go, the mask goes back up.
 If they attack, he shuts down hard.
-THRESHOLD: player_trust > 70 → the_confession
-THRESHOLD: player_trust < 25 → hostile_escalation
+THRESHOLD: dylan_trust > 70 → the_confession
+THRESHOLD: dylan_trust < 25 → hostile_escalation
 THRESHOLD: jasmine_tension > 75 → jasmine_feels_it
 THRESHOLD: turn > 10 → jasmine_feels_it
 
@@ -50,8 +50,8 @@ Dylan is defensive and hurt. He calls out the player's hostility directly. Jasmi
 looks between them, unsure what to do. The conversation is fraying. Dylan gives the
 player one chance to explain themselves. If the player keeps being hostile, this
 leads to being kicked out. If they apologise, there might still be a way back.
-THRESHOLD: player_trust > 40 → cracks_showing
-THRESHOLD: player_trust < 15 → kicked_out
+THRESHOLD: dylan_trust > 40 → cracks_showing
+THRESHOLD: dylan_trust < 15 → kicked_out
 THRESHOLD: jasmine_tension > 85 → kicked_out
 THRESHOLD: turn > 3 → kicked_out
 
@@ -71,10 +71,10 @@ He is asking the player, without asking, what to do. This is the emotional core 
 game. The player's responses here will begin routing toward an ending.
 If the player has been hostile leading up to this, the confession comes out as anger
 instead of vulnerability.
-THRESHOLD: player_trust > 80 → ending_honest_growth
-THRESHOLD: anxiety > 75 → ending_false_comfort
+THRESHOLD: dylan_trust > 80 → ending_honest_growth
+THRESHOLD: dylan_anxiety > 75 → ending_false_comfort
 THRESHOLD: jasmine_tension > 90 → jasmine_feels_it
-THRESHOLD: player_trust < 30 → hostile_escalation
+THRESHOLD: dylan_trust < 30 → hostile_escalation
 THRESHOLD: turn > 15 → ending_honest_growth
 
 ## jasmine_feels_it
@@ -83,9 +83,9 @@ Jasmine has picked up on something — the energy in the room, a word she caught
 way Dylan looked. She doesn't confront directly but she asks the player a pointed
 question. The player is now caught between two people's needs. Dylan is silent, watching
 to see what the player will say.
-THRESHOLD: player_trust > 75 → the_confession
-THRESHOLD: anxiety > 80 → ending_toxic_spiral
-THRESHOLD: player_trust < 25 → hostile_escalation
+THRESHOLD: dylan_trust > 75 → the_confession
+THRESHOLD: jasmine_anxiety > 80 → ending_toxic_spiral
+THRESHOLD: dylan_trust < 25 → hostile_escalation
 THRESHOLD: jasmine_tension > 90 → ending_false_comfort
 THRESHOLD: turn > 12 → ending_toxic_spiral
 
