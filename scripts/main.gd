@@ -70,17 +70,17 @@ const BEAT_GRAPH = {
 	],
 	"small_talk": [
 		{ "dylan_hostility_min": 25, "to": "hostile_undercurrents" },
-		{ "turn_min": 6, "jasmine_suspicion_max": 30, "to": "no_drama" },
+		{ "turn_min": 6, "jasmine_suspicion_max": 30, "dylan_hostility_max": 15, "to": "no_drama" },
 		{ "jasmine_suspicion_min": 35, "to": "cracks_showing" },
 		{ "turn_min": 12, "to": "cracks_showing" },
 	],
 	"no_drama": [
-		{ "turn_min": 6, "to": "ending_normal_night" },
+		{ "dylan_hostility_max": 15, "turn_min": 6, "to": "ending_normal_night" },
 	],
 	"cracks_showing": [
 		{ "dylan_hostility_min": 25, "to": "hostile_undercurrents" },
 		{ "jasmine_suspicion_min": 40, "to": "jasmine_feels_it" },
-		{ "dylan_mask_min": 50, "to": "no_drama" },
+		{ "dylan_mask_min": 50, "dylan_hostility_max": 15, "to": "no_drama" },
 		{ "turn_min": 8, "to": "jasmine_feels_it" },
 	],
 	"jasmine_feels_it": [
