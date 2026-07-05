@@ -61,7 +61,60 @@ var _viewing_character   : String = "dylan"
 var _char_emotions       : Dictionary = {"dylan": "neutral", "jasmine": "neutral"}
 
 const MAX_CONSECUTIVE    : int   = 3
-const BEAT_ORDER = [
+
+const BEAT_GRAPH = {
+	"arrival": [
+		{ "dylan_hostility_min": 30, "to": "game_over_kicked_out" },
+		{ "turn_min": 3, "to": "small_talk" },
+	],
+	"small_talk": [
+		{ "dylan_hostility_min": 25, "to": "hostile_undercurrents" },
+		{ "turn_min": 3, "jasmine_suspicion_max": 30, "to": "no_drama" },
+		{ "jasmine_suspicion_min": 35, "to": "cracks_showing" },
+		{ "turn_min": 6, "to": "cracks_showing" },
+	],
+	"no_drama": [
+		{ "turn_min": 3, "to": "ending_normal_night" },
+	],
+	"cracks_showing": [
+		{ "dylan_hostility_min": 25, "to": "hostile_undercurrents" },
+		{ "jasmine_suspicion_min": 40, "to": "jasmine_feels_it" },
+		{ "dylan_mask_min": 50, "to": "no_drama" },
+		{ "turn_min": 4, "to": "jasmine_feels_it" },
+	],
+	"jasmine_feels_it": [
+		{ "dylan_hostility_min": 30, "to": "hostile_undercurrents" },
+		{ "jasmine_suspicion_min": 60, "to": "ending_jasmine_leaves" },
+		{ "dylan_hope_min": 50, "to": "personal_growth" },
+		{ "dylan_attachment_min": 60, "to": "confession" },
+		{ "turn_min": 5, "to": "confession" },
+	],
+	"hostile_undercurrents": [
+		{ "dylan_hostility_min": 50, "to": "hostile_escalation" },
+		{ "dylan_trust_min": 45, "jasmine_suspicion_max": 35, "to": "jasmine_feels_it" },
+		{ "turn_min": 4, "to": "hostile_escalation" },
+	],
+	"hostile_escalation": [
+		{ "dylan_hostility_min": 80, "to": "game_over_kicked_out" },
+		{ "dylan_trust_max": 20, "dylan_hope_max": 20, "to": "ending_dark" },
+		{ "dylan_trust_min": 40, "to": "confession" },
+		{ "dylan_hope_min": 40, "to": "personal_growth" },
+		{ "turn_min": 4, "to": "confession" },
+	],
+	"confession": [
+		{ "dylan_attachment_min": 70, "to": "ending_return_to_past" },
+		{ "dylan_hope_min": 50, "dylan_trust_min": 40, "to": "ending_new_beginnings" },
+		{ "dylan_hope_max": 25, "dylan_trust_max": 25, "to": "ending_toxic_spiral" },
+		{ "turn_min": 4, "to": "ending_new_beginnings" },
+	],
+	"personal_growth": [
+		{ "dylan_trust_min": 60, "to": "ending_honest_growth" },
+		{ "dylan_hope_min": 50, "to": "ending_new_beginnings" },
+		{ "jasmine_suspicion_min": 50, "to": "ending_plot_twist" },
+		{ "turn_min": 4, "to": "ending_honest_growth" },
+	],
+}
+const BEAT_KEYS = [
 	"arrival", "small_talk", "no_drama", "cracks_showing",
 	"jasmine_feels_it", "hostile_undercurrents", "hostile_escalation",
 	"confession", "personal_growth",
@@ -92,9 +145,9 @@ func _ready():
 	prev_char_btn.pressed.connect(_on_prev_char)
 	next_char_btn.pressed.connect(_on_next_char)
 
-	for b in BEAT_ORDER:
+	for b in BEAT_KEYS:
 		beat_option.add_item(b)
-	beat_option.select(BEAT_ORDER.find(game_state.current_beat))
+	beat_option.select(BEAT_KEYS.find(game_state.current_beat))
 	for e in ["ending_normal_night", "ending_jasmine_leaves", "ending_new_beginnings", "ending_return_to_past", "ending_toxic_spiral", "ending_honest_growth", "ending_plot_twist", "ending_dark"]:
 		ending_option.add_item(e)
 	set_beat_btn.pressed.connect(_on_debug_set_beat)
@@ -194,7 +247,7 @@ func _handle_debug_command(cmd: String):
 		_add_line("DEBUG", "Unknown command. Try !help", Color.RED)
 
 func _on_debug_set_beat():
-	var beat = BEAT_ORDER[beat_option.selected]
+	var beat = BEAT_KEYS[beat_option.selected]
 	var dir = DramaLoader.get_directive(beat)
 	if dir != "":
 		game_state.current_beat = beat
@@ -226,7 +279,7 @@ func _sync_debug_menu():
 	jasmine_suspicion_sb.set_value_no_signal(game_state.jasmine_suspicion)
 	jasmine_patience_sb.set_value_no_signal(game_state.jasmine_patience)
 	jasmine_trust_sb.set_value_no_signal(game_state.jasmine_trust)
-	var idx = BEAT_ORDER.find(game_state.current_beat)
+	var idx = BEAT_KEYS.find(game_state.current_beat)
 	if idx != -1:
 		beat_option.select(idx)
 
@@ -326,7 +379,7 @@ Respond ONLY with a JSON object. No preamble, no explanation:
   "speaker":      "dylan or jasmine (default dylan)",
   "emotion":      "neutral | warm | defensive | hostile | anxious | vulnerable",
   "state_delta":  {{"dylan_trust": -2, "dylan_anxiety": 3}} (only include variables that change; all others default to 0 — do not add variables with 0 value),
-  "drama_signal":    "none | escalate | beat_complete | continue | game_over",
+  "drama_signal":    "none | continue (use continue only when another character has something meaningful to add without player input)",
   "player_intent":   "hostile | guilty | defensive | probing | supportive | curious | dismissive | neutral — the resolved intent after precedence + confidence rules",
   "narrative_moment": "a short phrase describing what happened this turn (e.g. 'dylan_deflected', 'jasmine_probed', 'player_showed_support', 'tension_rose'). Be specific to the scene."
 }}
@@ -335,13 +388,9 @@ ACTIONS: Use the "action" field for physical actions or non-verbal reactions. Ac
 
 PLAYER ACTIONS: If the player types something wrapped in *asterisks*, it is an action (e.g. "*grabs a drink*"). Treat it as something they did, not something they said.
 
-CONTINUE: Use "drama_signal": "continue" only when another character has something meaningful to add, or when your current response genuinely needs a follow-up. Never use "continue" to repeat yourself, add filler, or say the same thing in different words. If you have nothing new to contribute, signal "none" and let the player speak.
-
 NARRATIVE: Use "narrative_moment" to tag what story development occurred each turn. The STORY SO FAR section shows the arc of the conversation.
 
-BEAT PROGRESSION: You control when the scene advances. Signal "beat_complete" when the current beat has run its course — when the key story beat has landed, the tension has shifted, or the conversation has naturally reached a new phase. Do not advance too quickly: let each beat breathe. But do not linger once the moment has passed. Trust your judgment as a storyteller.
-
-IMPORTANT: If the current beat starts with "ending_" or is "game_over_kicked_out", the story is concluding. Write a final, fitting exchange that closes the scene naturally. The game will end after this response.""".format({
+BEAT PROGRESSION: Scene transitions are handled automatically by the game based on emotional state and conversation progress. You do not control when the beat changes. Focus solely on writing natural dialogue and accurate state deltas. If the current beat starts with "ending_" or is "game_over_kicked_out", write a final, fitting exchange — the game will end after this response.""".format({
 		"dylan_per":   dylan_per,
 		"jasmine_per": jasmine_per,
 		"tones":       tones,
@@ -470,14 +519,17 @@ func _apply_response(r: Dictionary):
 
 	_update_debug()
 
+	_compress_history(dialogue, speaker)
+
 	var signal_val = r.get("drama_signal", "none")
-	if signal_val == null:
-		signal_val = "none"
-	if signal_val == "game_over" or game_state.dylan_hostility >= 95 or game_state.jasmine_patience <= 5 or game_state.dylan_trust <= 5:
-		_compress_history(dialogue, speaker)
-		if signal_val == "game_over":
-			_trigger_game_over()
-		elif game_state.dylan_hostility >= 95:
+	if signal_val == "continue" and _continue_count < MAX_CONSECUTIVE:
+		_continue_count += 1
+		_call_llm()
+		return
+	_continue_count = 0
+
+	if game_state.dylan_hostility >= 95 or game_state.jasmine_patience <= 5 or game_state.dylan_trust <= 5:
+		if game_state.dylan_hostility >= 95:
 			_trigger_game_over("KICKED OUT", "Dylan had enough. The hostility in the room was suffocating. Before you could say another word, he showed you the door. Some doors don't open twice.")
 		elif game_state.dylan_trust <= 5:
 			_trigger_game_over("TRUST BROKEN", "Dylan doesn't trust you anymore. Whatever connection you once had, it's gone now. He looks at you like a stranger, and the night can't end soon enough.")
@@ -485,37 +537,45 @@ func _apply_response(r: Dictionary):
 			_trigger_game_over("PATIENCE EXHAUSTED", "Jasmine's patience finally ran out. She saw enough, felt enough. The evening ended not with a fight, but with quiet resignation.")
 		return
 
-	_advance_drama(signal_val)
-	_compress_history(dialogue, speaker)
+	_check_beat_transition()
 
-	if signal_val == "continue" and _continue_count < MAX_CONSECUTIVE:
-		_continue_count += 1
-		_call_llm()
+func _check_beat_transition():
+	var beat = game_state.current_beat
+	var transitions = BEAT_GRAPH.get(beat, [])
+	if transitions.is_empty():
 		return
 
-	_continue_count = 0
+	for t in transitions:
+		var match_all = true
+		for key in t:
+			if key == "to":
+				continue
+			var parts = key.rsplit("_", true, 1)
+			if parts.size() != 2:
+				continue
+			var state_key = parts[0]
+			var op = parts[1]
+			var threshold = t[key]
+			var val = game_state.get(state_key, 0)
 
-func _set_transition(next_beat: String):
-	_scene_transition = DramaLoader.get_directive(next_beat)
-	game_state.current_beat = next_beat
+			match op:
+				"min":
+					if val < threshold:
+						match_all = false
+				"max":
+					if val > threshold:
+						match_all = false
+		if not match_all:
+			continue
 
-func _advance_drama(signal_val: String):
-	var beat = game_state.current_beat
+		var target = t.to
+		_scene_transition = DramaLoader.get_directive(target)
+		game_state.current_beat = target
+		_add_line("— SCENE —", _scene_transition, Color.YELLOW)
 
-	if signal_val in ["beat_complete", "escalate"]:
-		var idx = BEAT_ORDER.find(beat)
-		if idx != -1 and idx < BEAT_ORDER.size() - 1:
-			var next = BEAT_ORDER[idx + 1]
-			if next.begins_with("ending_") or next == "game_over_kicked_out":
-				_set_transition(next)
-				_add_line("— SCENE —", _scene_transition, Color.YELLOW)
-				_trigger_ending(next)
-				return
-			_set_transition(next)
-			return
-		elif beat == "game_over_kicked_out":
-			_trigger_game_over()
-			return
+		if target.begins_with("ending_") or target == "game_over_kicked_out":
+			_trigger_ending(target)
+		return
 
 func _trigger_game_over(ending_name := "KICKED OUT", ending_text := ""):
 	if ending_text == "":
