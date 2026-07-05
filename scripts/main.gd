@@ -169,8 +169,9 @@ func _ready():
 	_update_character_display()
 	_update_debug()
 	var pname = Globals.player_name
-	_add_line("SCENE", "Dylan and Jasmine invited %s over for dinner. Dylan greets %s at the door; Jasmine is in the kitchen cooking." % [pname, pname], Color.YELLOW)
+	_add_line("SCENE", "%s arrives at the door. Dylan opens it with a warm greeting — Jasmine is in the kitchen cooking, and calls out a quick hello from there." % [pname], Color.YELLOW)
 	status_bar.text = "Type something to begin..."
+	player_input.grab_focus()
 
 func _input(event):
 	if event is InputEventKey and event.keycode == KEY_F3 and event.pressed and not event.echo:
@@ -309,8 +310,10 @@ func _build_present_str(beat: String) -> String:
 	var active = DramaLoader.get_characters(beat)
 	if "jasmine" in active:
 		return "Dylan and Jasmine are both here. Jasmine can hear the conversation and may speak up when something touches on her relationship with Dylan or her feelings."
-	else:
+	elif beat == "confession":
 		return "Only Dylan is present — Jasmine has stepped away. Dylan is more at ease and may talk about things he wouldn't say in front of her."
+	else:
+		return "Only Dylan is here — Jasmine is in the kitchen cooking. She can hear the conversation and may call out from there, but she hasn't come out yet. Dylan is slightly more at ease without her in the room."
 
 func _build_system_prompt() -> String:
 	var beat        = game_state.current_beat
@@ -378,13 +381,13 @@ CONVERSATION SO FAR: {summary}
 === RESPONSE FORMAT ===
 Respond ONLY with a JSON object. No preamble, no explanation:
 {{
-  "dialogue":     "1-2 sentences of in-character speech, natural and responsive",
+  "dialogue":     "1-2 sentences of in-character speech only — do NOT include the character name or any prefix, just the spoken words",
   "action":       "optional — describe a physical action (e.g. 'looks away, rubs his neck'). Use this instead of dialogue when the character is doing something non-verbal.",
   "speaker":      "dylan or jasmine (default dylan)",
   "emotion":      "neutral | warm | defensive | hostile | anxious | vulnerable",
   "state_delta":  {{"dylan_trust": -2, "dylan_anxiety": 3}} (only include variables that change; all others default to 0 — do not add variables with 0 value),
   "drama_signal":    "none | continue (use continue only when another character has something meaningful to add without player input)",
-  "player_intent":   "hostile | guilty | defensive | probing | supportive | curious | dismissive | neutral — the resolved intent after precedence + confidence rules",
+  "player_intent":   "one word only: hostile | guilty | defensive | probing | supportive | curious | dismissive | neutral",
   "narrative_moment": "a short phrase describing what happened this turn (e.g. 'dylan_deflected', 'jasmine_probed', 'player_showed_support', 'tension_rose'). Be specific to the scene."
 }}
 

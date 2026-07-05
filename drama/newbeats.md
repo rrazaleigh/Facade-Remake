@@ -6,7 +6,6 @@
 
 CHARACTERS:
 - Dylan
-- Jasmine
 
 PURPOSE:
 Introduce the evening. Dylan always greets the the Player at the door. Jasmine is cooking. Everything appears normal on the surface, but subtle hints suggest Dylan isn't completely present.
@@ -17,11 +16,6 @@ Dylan:
 - Friendly
 - Relaxed on the surface
 - Carrying hidden emotional baggage
-
-Jasmine:
-- Happy
-- Welcoming
-- Focused on hosting
 
 PLAYER GOALS:
 - Be polite
@@ -46,7 +40,7 @@ CHARACTERS:
 - Jasmine
 
 PURPOSE:
-Build comfort while allowing Dylan's emotional mask to begin slipping. Jasmine has finished cooking and is serving the dishes on the table.
+Build comfort while allowing Dylan's emotional mask to begin slipping. 	Jasmine has finished cooking and is serving the dishes on the table. Jasmine persona should greet the player.
 
 EMOTIONAL STATE:
 
@@ -56,6 +50,7 @@ Dylan:
 - Occasionally distracted
 
 Jasmine:
+- Welcoming
 - Relaxed
 - Observant
 - Enjoying the evening

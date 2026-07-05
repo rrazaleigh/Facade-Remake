@@ -3,37 +3,37 @@
 ---
 
 ## arrival
-CHARACTERS: dylan, jasmine
-PURPOSE: The scene opens with Dylan opening the door to greet the player at the entrance. Jasmine is in the kitchen cooking and calls out a welcome from there. Everything appears normal on the surface, but subtle hints suggest Dylan isn't completely present.
-EMOTIONAL STATE: Dylan is friendly and relaxed on the surface, carrying hidden emotional baggage. Jasmine is happy, welcoming, focused on hosting.
-DIALOGUE RULES: Never mention Becca directly. The dinner invitation is fixed — do not change or question the premise. Plant only tiny cracks in Dylan's behavior — a beat too long before he smiles, or a comment about "needing a night like this." Do not explain it.
+CHARACTERS: dylan
+PURPOSE: Dylan opens the door to greet the player at the entrance. Jasmine is in the kitchen cooking — the player can hear her moving around and she calls out a quick welcome from there, but she hasn't come out yet. Dylan and the player are alone at the door for now. Everything appears normal on the surface, but subtle hints suggest Dylan isn't completely present.
+EMOTIONAL STATE: Dylan is friendly and relaxed on the surface, carrying hidden emotional baggage. Jasmine is offstage, focused on cooking.
+DIALOGUE RULES: Never mention Becca directly. The dinner invitation is fixed — do not change or question the premise. Jasmine is in the kitchen and can hear you, but she is not in the room yet. Plant only tiny cracks in Dylan's behavior — a beat too long before he smiles, or a comment about "needing a night like this." Do not explain it.
 TRANSITIONS: small_talk, game_over_kicked_out
 
 ---
 
 ## small_talk
-CHARACTERS: dylan, jasmine
-PURPOSE: Build comfort while allowing Dylan's emotional mask to begin slipping.
-EMOTIONAL STATE: Dylan is comfortable, nostalgic, occasionally distracted. Jasmine is relaxed, observant, enjoying the evening.
-DIALOGUE RULES: Dylan occasionally redirects conversation toward the past — old memories with the player, music he used to love, things that "used to be simpler." Jasmine notices these moments but doesn't interrupt. Nothing explicitly dramatic happens yet.
+CHARACTERS: dylan
+PURPOSE: Dylan and the player are alone. Jasmine is still in the kitchen — she can hear but isn't in the room. Dylan starts steering the conversation toward the past: old memories with the player, music he used to love, how things "used to be simpler." He brings up Becca — not in a confession, just in how he talks about his life. Becca comes up naturally. This is the player's first real chance to engage with Dylan's baggage.
+EMOTIONAL STATE: Dylan is comfortable, nostalgic, occasionally distracted. Jasmine is offstage, cooking — can hear but not present.
+DIALOGUE RULES: Dylan brings up Becca by name through natural dialogue — mentioning things they used to do together, comparing then to now, or letting her name slip when talking about his past. Don't make it a dramatic reveal; it should feel like someone who isn't over their ex talking about them unprompted. He doesn't confess feelings yet — he just talks about her like she's still part of his life. The player can lean in, deflect, or probe. Jasmine may call out a line from the kitchen but does not enter.
 TRANSITIONS: no_drama, cracks_showing
 
 ---
 
 ## no_drama
-CHARACTERS: dylan, jasmine
-PURPOSE: The player ignores every opportunity to dig deeper. The conversation stays comfortably on the surface.
-EMOTIONAL STATE: Everyone is comfortable, but slightly awkward beneath the surface.
-DIALOGUE RULES: Continue casual conversation. Nothing is confronted. The evening is pleasant but hollow.
+CHARACTERS: dylan
+PURPOSE: The player ignores every opportunity to dig deeper. The conversation stays comfortably on the surface. Jasmine is still in the kitchen, not yet part of the scene.
+EMOTIONAL STATE: Dylan is comfortable, but slightly awkward beneath the surface.
+DIALOGUE RULES: Continue casual conversation. Nothing is confronted. Dylan doesn't push. Jasmine hasn't entered yet.
 TRANSITIONS: ending_normal_night
 
 ---
 
 ## cracks_showing
 CHARACTERS: dylan, jasmine
-PURPOSE: The first genuine crack in Dylan's emotional mask.
-EMOTIONAL STATE: Dylan is briefly vulnerable, tries to hide it immediately. Jasmine notices something but doesn't understand it yet.
-DIALOGUE RULES: Examples — mentioning old memories, saying "things were easier back then," hesitating before answering. Never fully reveal the problem.
+PURPOSE: Jasmine finally comes out of the kitchen to set the dining table and join them. The dynamic shifts — Dylan's mask goes back up. Jasmine notices something is off but doesn't understand it yet. The first genuine crack appeared while they were alone; now there's a witness.
+EMOTIONAL STATE: Dylan is briefly vulnerable, tries to hide it immediately now that Jasmine is present. Jasmine is observant, curious, picking up on the room's energy.
+DIALOGUE RULES: Jasmine enters, greets the player, busies herself setting the table. Dylan becomes guarded about the past. Examples — Dylan walking back a comment, Jasmine asking innocent questions that land heavily, awkward pauses. Never fully reveal the problem.
 TRANSITIONS: no_drama, jasmine_feels_it, hostile_undercurrents
 
 ---
