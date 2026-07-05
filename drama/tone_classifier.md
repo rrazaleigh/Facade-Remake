@@ -1,54 +1,106 @@
-# PLAYER TONE CLASSIFIER
+# PLAYER INTENT CLASSIFIER
 
-Classify the player's most recent message into ONE of the tones below.
-Use the tone to inform state_delta values. The tone represents how the
-player is treating Dylan and the situation.
+Evaluate the player's message in three sequential stages. Each stage feeds into the next. Combine all three to determine the final state delta.
 
-## supportive
-The player is being kind, understanding, or empathetic.
-- player_trust: +5 to +10 (building trust)
-- jasmine_tension: -3 to -5 (easing the room)
-- anxiety: -3 to -8 (reassuring Dylan)
+## STAGE 1: INTENT — what is the player trying to do
 
-## neutral
-The player is making casual conversation, not pushing.
-- player_trust: 0 to +3
-- jasmine_tension: 0 to +2
-- anxiety: 0 to -2
+Classify the player's primary intent. Use the definitions and indicators below. If multiple intents fit, apply the PRECEDENCE RULE. If confidence in any single intent is below 0.60, classify as Neutral.
 
-## curious
-The player is asking questions, probing, but not hostile.
-- player_trust: +1 to +4 (interest feels genuine)
-- jasmine_tension: +3 to +6 (questions create unease)
-- anxiety: +2 to +5 (Dylan is being examined)
+### Confdence Rule
+Assign a confidence score 0.00–1.00 for the selected intent. If confidence < 0.60, override to Neutral regardless of indicators.
 
-## defensive
-The player is pushing back, deflecting, or justifying.
-- player_trust: -3 to -8 (pushing Dylan away)
-- jasmine_tension: +3 to +7 (tension rises)
-- anxiety: +3 to +6 (Dylan feels attacked)
+### Precedence Rule (for overlapping intent)
+When multiple intents are present, the highest-precedence intent wins regardless of order of appearance:
+Hostile > Guilty > Defensive > Probing > Supportive > Curious > Dismissive > Neutral
 
-## hostile
-The player is confrontational, insulting, or aggressive.
-- player_trust: -8 to -15 (eroding trust fast)
-- jasmine_tension: +8 to +15 (room becomes toxic)
-- anxiety: +8 to +15 (Dylan feels unsafe)
-- If sustained, may trigger drama_signal: "game_over"
+### Hostile
+Definition: The player is confrontational, insulting, or deliberately aggressive. They want to provoke, attack, or drive a wedge.
+Indicators: Insults, raised-language accusations, swearing at a person, sarcastic put-downs, threats, telling someone to leave, mocking.
+State deltas — Low: trust -3 to -5, hostility +3 to +5, anxiety +2 to +4, hope -1 to -2, patience -2 to -3
+              Medium: trust -6 to -10, hostility +6 to +10, anxiety +5 to +8, hope -3 to -5, patience -4 to -7
+              High: trust -11 to -15, hostility +11 to +15, anxiety +9 to +12, hope -6 to -8, patience -8 to -12
 
-## dismissive
-The player is brushing things off, not engaging seriously.
-- player_trust: -2 to -5 (shows disinterest)
-- jasmine_tension: +1 to +3 (awkwardness)
-- anxiety: +2 to +4 (Dylan feels unheard)
+### Guilty
+Definition: The player is apologising, expressing regret, or taking blame. They want to make amends or show remorse.
+Indicators: "I'm sorry", "I shouldn't have", "my fault", apologetic tone, self-blame, asking for forgiveness, acknowledging hurt.
+State deltas — Low: trust +2 to +4, hope +1 to +2, hostility -1 to -2, anxiety -2 to -3, suspicion -1 to -2
+              Medium: trust +5 to +8, hope +3 to +5, hostility -3 to -5, anxiety -4 to -7, suspicion -3 to -5
+              High: trust +9 to +12, hope +6 to +8, hostility -6 to -8, anxiety -8 to -10, suspicion -6 to -8
 
-## guilty
-The player is apologising or expressing regret.
-- player_trust: +3 to +7 (rebuilding)
-- jasmine_tension: -2 to -5 (relief)
-- anxiety: -3 to -6 (tension drops)
+### Defensive
+Definition: The player is pushing back, justifying themselves, or deflecting blame. They feel accused and are protecting themselves.
+Indicators: "That's not fair", "I didn't mean it", excuses, deflecting questions, turning blame back, minimising ("it's not that serious"), shutting down.
+State deltas — Low: trust -2 to -3, hostility +1 to +2, anxiety +2 to +4, mask +1 to +2, patience -1 to -2
+              Medium: trust -4 to -7, hostility +3 to +5, anxiety +5 to +7, mask +3 to +4, patience -3 to -5
+              High: trust -8 to -10, hostility +6 to +8, anxiety +8 to +10, mask +5 to +6, patience -6 to -8
 
-## probing
-The player is digging into a sensitive topic intentionally.
-- player_trust: -1 to -4 (prying feels invasive)
-- jasmine_tension: +5 to +10 (Jasmine is near a nerve)
-- anxiety: +5 to +10 (Dylan is cornered)
+### Probing
+Definition: The player is deliberately digging into a sensitive topic. They want information, truth, or a reaction — not casual curiosity but targeted inquiry.
+Indicators: Repeated questions about the same topic, pushing after being deflected, asking about Becca directly, asking about feelings with clear intent, cornering someone with a question, "Why did you...", "Tell me about...".
+State deltas — Low: suspicion +1 to +2, anxiety +2 to +3, trust -1 to -2, attachment +1
+              Medium: suspicion +3 to +5, anxiety +4 to +7, trust -3 to -5, attachment +2 to +3
+              High: suspicion +6 to +8, anxiety +8 to +10, trust -6 to -8, attachment +4 to +5
+
+### Supportive
+Definition: The player is being kind, understanding, empathetic, or reassuring. They want to help, comfort, or connect.
+Indicators: "I understand", "that sounds hard", validating feelings, offering comfort, being patient, gentle follow-ups, expressing care.
+State deltas — Low: trust +2 to +4, hope +2 to +3, anxiety -2 to -3, hostility -1, mask -1 to -2
+              Medium: trust +5 to +8, hope +4 to +6, anxiety -4 to -6, hostility -2 to -3, mask -3 to -4
+              High: trust +9 to +12, hope +7 to +9, anxiety -7 to -9, hostility -4 to -5, mask -5 to -6
+
+### Curious
+Definition: The player is asking questions from genuine interest, not pressure. They want to understand without forcing.
+Indicators: Open-ended questions, "How are you?", "What happened?", casual curiosity, asking about the evening or past without pushing, interested but gentle.
+State deltas — Low: trust +1 to +2, anxiety +1 to +2, suspicion +1, patience -1
+              Medium: trust +3 to +4, anxiety +3 to +4, suspicion +2, patience -2 to -3
+              High: trust +5 to +6, anxiety +5 to +6, suspicion +3 to +4, patience -4 to -5
+
+### Dismissive
+Definition: The player is brushing things off, avoiding engagement, or signalling disinterest. They don't want to deal with the emotional weight.
+Indicators: Changing the subject, "It's fine", "Whatever", short uninterested replies, ignoring emotional cues, deflecting with humour or politeness, "Let's not talk about that".
+State deltas — Low: trust -1 to -2, hope -1, anxiety +1, mask +1
+              Medium: trust -3 to -4, hope -2 to -3, anxiety +2 to +3, mask +2 to +3, patience -1 to -2
+              High: trust -5 to -6, hope -4 to -5, anxiety +4 to +5, mask +4 to +5, patience -3 to -4
+
+### Neutral
+Definition: The player is making casual conversation, greetings, or statements without strong emotional weight. No clear intent dominates.
+Indicators: Small talk, greetings, observations about the room/food, "How was your day?", generic responses, statements of fact.
+State deltas — Low: trust 0 to +1, anxiety 0 to -1
+              Medium: trust +2, anxiety -2
+              High: N/A — strong neutral is contradictory; treat as Low.
+
+### TARGET BIAS (use with ALL intents)
+If the player's message is directed primarily at one character, apply their state_deltas more heavily:
+  - dylan: multiply his deltas by 1.5, Jasmine's by 0.5
+  - jasmine: multiply her deltas by 1.5, Dylan's by 0.5
+  - both: no multiplier
+  - neither (self/general): apply all at 0.75x
+
+## STAGE 2: TARGET — who is the player referencing
+
+Determine the primary target of the player's message:
+
+dylan:   Player addresses Dylan directly (uses his name, asks him a question, responds to him, talks about his past).
+jasmine: Player addresses Jasmine directly (uses her name, asks her a question, responds to her).
+both:    Player addresses both of them, or the topic involves both equally.
+neither: Player talks about themselves, makes a general statement, or the target is unclear.
+
+## STAGE 3: INTENSITY — how strongly is this being expressed
+
+Determine the intensity level of the player's intent:
+
+High:   Strong language, emotional charge, repeated emphasis, exclamation, heightened vocabulary, clear emotional investment.
+Medium: Moderate language, some emotion but controlled, clear intent without overstatement.
+Low:    Mild or tentative language, hedging, casual tone, low emotional investment.
+
+## COMBINING THE THREE STAGES
+
+Final process:
+1. Identify INTENT from Stage 1 (apply precedence + confidence rule).
+2. Identify TARGET from Stage 2.
+3. Identify INTENSITY from Stage 3.
+4. Apply TARGET BIAS to the selected intent's state delta ranges.
+5. Pick a specific value within the final range (use your judgment based on context).
+6. Output the resolved intent in the "player_intent" field of your JSON response.
+
+The intent, target, and intensity are for your internal use only. Do not output them to the player. The player should never know you are classifying them.

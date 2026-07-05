@@ -52,7 +52,7 @@ var history_summary      : String = ""
 var waiting              : bool   = false
 var _pending_user_index  : int   = -1
 var _game_over           : bool   = false
-var _last_player_tone    : String = "neutral"
+var _last_player_intent   : String = "neutral"
 var _scene_transition    : String = ""
 var _continue_count      : int   = 0
 var _narrative_log       : Array = []
@@ -261,7 +261,7 @@ func _build_system_prompt() -> String:
 	var jasmine_per = DramaLoader.get_persona("jasmine")
 	var directive   = DramaLoader.get_directive(beat)
 	var tones       = DramaLoader.get_tone_classifier()
-	var last_tone   = _last_player_tone
+	var last_intent = _last_player_intent
 	var present     = _build_present_str(beat)
 	var transition  = ""
 	if _scene_transition != "":
@@ -293,10 +293,15 @@ Characters can naturally have short exchanges with each other — Dylan and Jasm
 === JASMINE (inhabit when speaker="jasmine") ===
 {jasmine_per}
 
-=== PLAYER TONE CLASSIFIER ===
-First, silently classify the player's message into one tone below.
-Then use that tone to inform the state_delta. This is how the player
+=== PLAYER INTENT CLASSIFIER ===
+Silently evaluate the player's message in three stages:
+1. INTENT — what is the player trying to do
+2. TARGET — who is the player referencing
+3. INTENSITY — how strongly is this expressed
+
+Use these to determine state_delta values. This is how the player
 is treating you right now.
+
 {tones}
 
 === CURRENT SCENE CONTEXT ===
@@ -308,7 +313,7 @@ EMOTIONAL STATE:
   Dylan:  mask={dm}  anxiety={da}  attachment={dat}  trust={dt}  hope={dh}  hostility={dho}
   Jasmine: suspicion={js}  patience={jp}  trust={jt}
 
-LAST PLAYER TONE: {last_tone}
+LAST PLAYER INTENT: {last_intent}
 STORY SO FAR: {narrative}
 CONVERSATION SO FAR: {summary}
 {transition}
@@ -322,7 +327,7 @@ Respond ONLY with a JSON object. No preamble, no explanation:
   "emotion":      "neutral | warm | defensive | hostile | anxious | vulnerable",
   "state_delta":  {{"dylan_mask": 0, "dylan_anxiety": 0, "dylan_attachment": 0, "dylan_trust": 0, "dylan_hope": 0, "dylan_hostility": 0, "jasmine_suspicion": 0, "jasmine_patience": 0, "jasmine_trust": 0}},
   "drama_signal":    "none | escalate | beat_complete | continue | game_over",
-  "player_tone":     "the tone you classified for the player's message",
+  "player_intent":   "hostile | guilty | defensive | probing | supportive | curious | dismissive | neutral — the resolved intent after precedence + confidence rules",
   "narrative_moment": "a short phrase describing what happened this turn (e.g. 'dylan_deflected', 'jasmine_probed', 'player_showed_support', 'tension_rose'). Be specific to the scene."
 }}
 
@@ -351,7 +356,7 @@ IMPORTANT: If the current beat starts with "ending_" or is "game_over_kicked_out
 		"js":          game_state.jasmine_suspicion,
 		"jp":          game_state.jasmine_patience,
 		"jt":          game_state.jasmine_trust,
-		"last_tone":   last_tone,
+		"last_intent": last_intent,
 		"summary":     history_summary if history_summary != "" else "The evening has just started.",
 		"present":     present,
 		"transition":  transition,
@@ -441,7 +446,7 @@ func _apply_response(r: Dictionary):
 	_viewing_character = speaker
 	_update_character_display()
 
-	_last_player_tone = r.get("player_tone", "neutral")
+	_last_player_intent = r.get("player_intent", "neutral")
 
 	var delta = r.get("state_delta", {})
 	game_state.dylan_mask        = clamp(game_state.dylan_mask       + int(delta.get("dylan_mask",        0)), 0, 100)
@@ -651,6 +656,6 @@ func _update_debug():
 	state_label1.text = "%s: %d" % [labels[0], game_state.get(keys[0], 0)]
 	state_label2.text = "%s: %d" % [labels[1], game_state.get(keys[1], 0)]
 	state_label3.text = "%s: %d" % [labels[2], game_state.get(keys[2], 0)]
-	player_tone_label.text = "Player tone: %s" % _last_player_tone
+	player_tone_label.text = "Player intent: %s" % _last_player_intent
 	if debug_window.visible:
 		_sync_debug_menu()
