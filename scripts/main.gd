@@ -65,53 +65,53 @@ const MAX_CONSECUTIVE    : int   = 3
 const BEAT_GRAPH = {
 	"arrival": [
 		{ "dylan_hostility_min": 30, "to": "game_over_kicked_out" },
-		{ "turn_min": 3, "to": "small_talk" },
+		{ "turn_min": 6, "to": "small_talk" },
 	],
 	"small_talk": [
 		{ "dylan_hostility_min": 25, "to": "hostile_undercurrents" },
-		{ "turn_min": 3, "jasmine_suspicion_max": 30, "to": "no_drama" },
+		{ "turn_min": 6, "jasmine_suspicion_max": 30, "to": "no_drama" },
 		{ "jasmine_suspicion_min": 35, "to": "cracks_showing" },
-		{ "turn_min": 6, "to": "cracks_showing" },
+		{ "turn_min": 12, "to": "cracks_showing" },
 	],
 	"no_drama": [
-		{ "turn_min": 3, "to": "ending_normal_night" },
+		{ "turn_min": 6, "to": "ending_normal_night" },
 	],
 	"cracks_showing": [
 		{ "dylan_hostility_min": 25, "to": "hostile_undercurrents" },
 		{ "jasmine_suspicion_min": 40, "to": "jasmine_feels_it" },
 		{ "dylan_mask_min": 50, "to": "no_drama" },
-		{ "turn_min": 4, "to": "jasmine_feels_it" },
+		{ "turn_min": 8, "to": "jasmine_feels_it" },
 	],
 	"jasmine_feels_it": [
 		{ "dylan_hostility_min": 30, "to": "hostile_undercurrents" },
 		{ "jasmine_suspicion_min": 60, "to": "ending_jasmine_leaves" },
 		{ "dylan_hope_min": 50, "to": "personal_growth" },
 		{ "dylan_attachment_min": 60, "to": "confession" },
-		{ "turn_min": 5, "to": "confession" },
+		{ "turn_min": 10, "to": "confession" },
 	],
 	"hostile_undercurrents": [
 		{ "dylan_hostility_min": 50, "to": "hostile_escalation" },
 		{ "dylan_trust_min": 45, "jasmine_suspicion_max": 35, "to": "jasmine_feels_it" },
-		{ "turn_min": 4, "to": "hostile_escalation" },
+		{ "turn_min": 8, "to": "hostile_escalation" },
 	],
 	"hostile_escalation": [
 		{ "dylan_hostility_min": 80, "to": "game_over_kicked_out" },
 		{ "dylan_trust_max": 20, "dylan_hope_max": 20, "to": "ending_dark" },
 		{ "dylan_trust_min": 40, "to": "confession" },
 		{ "dylan_hope_min": 40, "to": "personal_growth" },
-		{ "turn_min": 4, "to": "confession" },
+		{ "turn_min": 8, "to": "confession" },
 	],
 	"confession": [
 		{ "dylan_attachment_min": 70, "to": "ending_return_to_past" },
 		{ "dylan_hope_min": 50, "dylan_trust_min": 40, "to": "ending_new_beginnings" },
 		{ "dylan_hope_max": 25, "dylan_trust_max": 25, "to": "ending_toxic_spiral" },
-		{ "turn_min": 4, "to": "ending_new_beginnings" },
+		{ "turn_min": 8, "to": "ending_new_beginnings" },
 	],
 	"personal_growth": [
 		{ "dylan_trust_min": 60, "to": "ending_honest_growth" },
 		{ "dylan_hope_min": 50, "to": "ending_new_beginnings" },
 		{ "jasmine_suspicion_min": 50, "to": "ending_plot_twist" },
-		{ "turn_min": 4, "to": "ending_honest_growth" },
+		{ "turn_min": 8, "to": "ending_honest_growth" },
 	],
 }
 const BEAT_KEYS = [
