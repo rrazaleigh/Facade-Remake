@@ -17,44 +17,44 @@ Hostile > Guilty > Defensive > Probing > Supportive > Curious > Dismissive > Neu
 Definition: The player is confrontational, insulting, or deliberately aggressive. They want to provoke, attack, or drive a wedge.
 Indicators: Insults, raised-language accusations, swearing at a person, sarcastic put-downs, threats, telling someone to leave, mocking.
 State deltas — Low: trust -1 to -2, hostility +1 to +2, anxiety +1 to +2, hope -1, patience -1
-              Medium: trust -3 to -5, hostility +3 to +5, anxiety +2 to +4, hope -1 to -2, patience -2 to -3
-              High: trust -5 to -7, hostility +5 to +7, anxiety +4 to +6, hope -3 to -4, patience -4 to -6
+			  Medium: trust -3 to -5, hostility +3 to +5, anxiety +2 to +4, hope -1 to -2, patience -2 to -3
+			  High: trust -5 to -7, hostility +5 to +7, anxiety +4 to +6, hope -3 to -4, patience -4 to -6
 
 ### Guilty
 Definition: The player is apologising, expressing regret, or taking blame. They want to make amends or show remorse.
 Indicators: "I'm sorry", "I shouldn't have", "my fault", apologetic tone, self-blame, asking for forgiveness, acknowledging hurt.
 State deltas — Low: trust +1 to +2, hope +1, hostility -1, anxiety -1, suspicion -1
-              Medium: trust +2 to +4, hope +1 to +2, hostility -1 to -2, anxiety -2 to -3, suspicion -1 to -2
-              High: trust +4 to +6, hope +3 to +4, hostility -3 to -4, anxiety -4 to -5, suspicion -3 to -4
+			  Medium: trust +2 to +4, hope +1 to +2, hostility -1 to -2, anxiety -2 to -3, suspicion -1 to -2
+			  High: trust +4 to +6, hope +3 to +4, hostility -3 to -4, anxiety -4 to -5, suspicion -3 to -4
 
 ### Defensive
 Definition: The player is pushing back, justifying themselves, or deflecting blame. They feel accused and are protecting themselves.
 Indicators: "That's not fair", "I didn't mean it", excuses, deflecting questions, turning blame back, minimising ("it's not that serious"), shutting down.
 State deltas — Low: trust -1, hostility +1, anxiety +1 to +2, mask +1, patience -1
-              Medium: trust -2 to -3, hostility +1 to +2, anxiety +2 to +3, mask +1 to +2, patience -1 to -2
-              High: trust -4 to -5, hostility +3 to +4, anxiety +4 to +5, mask +2 to +3, patience -3 to -4
+			  Medium: trust -2 to -3, hostility +1 to +2, anxiety +2 to +3, mask +1 to +2, patience -1 to -2
+			  High: trust -4 to -5, hostility +3 to +4, anxiety +4 to +5, mask +2 to +3, patience -3 to -4
 
 ### Probing
 Definition: The player is deliberately digging into a sensitive topic. They want information, truth, or a reaction — not casual curiosity but targeted inquiry.
 Indicators: Repeated questions about the same topic, pushing after being deflected, asking about Becca directly, asking about feelings with clear intent, cornering someone with a question, "Why did you...", "Tell me about...".
 State deltas — Low: suspicion +1, anxiety +1, trust -1, attachment +1
-              Medium: suspicion +1 to +2, anxiety +2 to +3, trust -1 to -2, attachment +1
-              High: suspicion +3 to +4, anxiety +4 to +5, trust -3 to -4, attachment +2
+			  Medium: suspicion +1 to +2, anxiety +2 to +3, trust -1 to -2, attachment +1
+			  High: suspicion +3 to +4, anxiety +4 to +5, trust -3 to -4, attachment +2
 
 ### Supportive
 Definition: The player is being kind, understanding, empathetic, or reassuring. They want to help, comfort, or connect.
 Indicators: "I understand", "that sounds hard", validating feelings, offering comfort, being patient, gentle follow-ups, expressing care.
 State deltas — Low: trust +1 to +2, hope +1, anxiety -1, hostility -1 to 0, mask -1
-              Medium: trust +2 to +4, hope +2 to +3, anxiety -2 to -3, hostility -1, mask -1 to -2
-              High: trust +4 to +6, hope +3 to +4, anxiety -3 to -4, hostility -2, mask -2 to -3
+			  Medium: trust +2 to +4, hope +2 to +3, anxiety -2 to -3, hostility -1, mask -1 to -2
+			  High: trust +4 to +6, hope +3 to +4, anxiety -3 to -4, hostility -2, mask -2 to -3
 Supportive NEVER increases hostility. Hostility delta is 0 or negative only.
 
 ### Curious
 Definition: The player is asking questions from genuine interest, not pressure. They want to understand without forcing.
 Indicators: Open-ended questions, "How are you?", "What happened?", casual curiosity, asking about the evening or past without pushing, interested but gentle.
 State deltas — Low: trust +1, anxiety +1, suspicion +1, patience -1
-              Medium: trust +1 to +2, anxiety +1 to +2, suspicion +1, patience -1
-              High: trust +2 to +3, anxiety +2 to +3, suspicion +1 to +2, patience -2
+			  Medium: trust +1 to +2, anxiety +1 to +2, suspicion +1, patience -1
+			  High: trust +2 to +3, anxiety +2 to +3, suspicion +1 to +2, patience -2
 
 ### Dismissive
 Definition: The player is brushing things off, avoiding engagement, or signalling disinterest. They don't want to deal with the emotional weight.

@@ -59,6 +59,7 @@ var _narrative_log       : Array = []
 var _last_speaker        : String = "dylan"
 var _viewing_character   : String = "dylan"
 var _char_emotions       : Dictionary = {"dylan": "neutral", "jasmine": "neutral"}
+var _beat_start_turn     : int   = 0
 
 const MAX_CONSECUTIVE    : int   = 3
 
@@ -164,6 +165,7 @@ func _ready():
 	close_debug_btn.pressed.connect(_on_debug_close)
 	debug_window.visibility_changed.connect(_sync_debug_menu)
 
+	_beat_start_turn = 0
 	_update_character_display()
 	_update_debug()
 	var pname = Globals.player_name
@@ -218,6 +220,7 @@ func _handle_debug_command(cmd: String):
 		var dir  = DramaLoader.get_directive(beat)
 		if dir != "":
 			game_state.current_beat = beat
+			_beat_start_turn = game_state.turn
 			_add_line("— SCENE —", dir, Color.YELLOW)
 		else:
 			_add_line("DEBUG", "Unknown beat: %s" % beat, Color.RED)
@@ -251,6 +254,7 @@ func _on_debug_set_beat():
 	var dir = DramaLoader.get_directive(beat)
 	if dir != "":
 		game_state.current_beat = beat
+		_beat_start_turn = game_state.turn
 		_add_line("— SCENE —", dir, Color.YELLOW)
 		_update_debug()
 	else:
@@ -545,6 +549,8 @@ func _check_beat_transition():
 	if transitions.is_empty():
 		return
 
+	var turns_in_beat = game_state.turn - _beat_start_turn
+
 	for t in transitions:
 		var match_all = true
 		for key in t:
@@ -556,7 +562,7 @@ func _check_beat_transition():
 			var state_key = parts[0]
 			var op = parts[1]
 			var threshold = t[key]
-			var val = game_state.get(state_key, 0)
+			var val = turns_in_beat if state_key == "turn" else game_state.get(state_key, 0)
 
 			match op:
 				"min":
@@ -571,6 +577,7 @@ func _check_beat_transition():
 		var target = t.to
 		_scene_transition = DramaLoader.get_directive(target)
 		game_state.current_beat = target
+		_beat_start_turn = game_state.turn
 		_add_line("— SCENE —", _scene_transition, Color.YELLOW)
 
 		if target.begins_with("ending_") or target == "game_over_kicked_out":
