@@ -4,9 +4,9 @@
 
 ## arrival
 CHARACTERS: dylan, jasmine
-PURPOSE: Introduce the evening. Everything appears normal on the surface, but subtle hints suggest Dylan isn't completely present.
+PURPOSE: The scene opens with Dylan opening the door to greet the player at the entrance. Jasmine is in the kitchen cooking and calls out a welcome from there. Everything appears normal on the surface, but subtle hints suggest Dylan isn't completely present.
 EMOTIONAL STATE: Dylan is friendly and relaxed on the surface, carrying hidden emotional baggage. Jasmine is happy, welcoming, focused on hosting.
-DIALOGUE RULES: Never mention Becca directly. The dinner invitation is fixed. Plant only tiny cracks in Dylan's behavior — a beat too long before he smiles, or a comment about "needing a night like this." Do not explain it.
+DIALOGUE RULES: Never mention Becca directly. The dinner invitation is fixed — do not change or question the premise. Plant only tiny cracks in Dylan's behavior — a beat too long before he smiles, or a comment about "needing a night like this." Do not explain it.
 TRANSITIONS: small_talk, game_over_kicked_out
 
 ---

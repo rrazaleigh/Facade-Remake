@@ -45,8 +45,8 @@ State deltas — Low: suspicion +1 to +2, anxiety +2 to +3, trust -1 to -2, atta
 Definition: The player is being kind, understanding, empathetic, or reassuring. They want to help, comfort, or connect.
 Indicators: "I understand", "that sounds hard", validating feelings, offering comfort, being patient, gentle follow-ups, expressing care.
 State deltas — Low: trust +2 to +4, hope +2 to +3, anxiety -2 to -3, hostility -1 to 0, mask -1 to -2
-              Medium: trust +5 to +8, hope +4 to +6, anxiety -4 to -6, hostility -2 to -3, mask -3 to -4
-              High: trust +9 to +12, hope +7 to +9, anxiety -7 to -9, hostility -4 to -5, mask -5 to -6
+			  Medium: trust +5 to +8, hope +4 to +6, anxiety -4 to -6, hostility -2 to -3, mask -3 to -4
+			  High: trust +9 to +12, hope +7 to +9, anxiety -7 to -9, hostility -4 to -5, mask -5 to -6
 Supportive NEVER increases hostility. Hostility delta is 0 or negative only.
 
 ### Curious
