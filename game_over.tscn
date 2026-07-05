@@ -44,6 +44,8 @@ scroll_active = false
 [node name="Ending" type="Label" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=1447199772]
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "test"
 horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ColorRect/MarginContainer/VBoxContainer" unique_id=1973222549]
@@ -60,7 +62,7 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="DylanTrust" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=544624564]
+[node name="DylanMask" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=544624564]
 layout_mode = 2
 size_flags_horizontal = 3
 
@@ -68,14 +70,14 @@ size_flags_horizontal = 3
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="DylanTension" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1099579229]
+[node name="DylanAttachment" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1099579229]
 layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="EndingText" type="RichTextLabel" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer" unique_id=534665769]
 custom_minimum_size = Vector2(1200, 500)
 layout_mode = 2
-theme_override_font_sizes/normal_font_size = 60
+theme_override_font_sizes/normal_font_size = 40
 bbcode_enabled = true
 horizontal_alignment = 1
 
@@ -88,15 +90,15 @@ custom_minimum_size = Vector2(300, 0)
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="JasmineTrust" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=2085794965]
+[node name="JasmineSuspicion" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=2085794965]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="JasmineAnxiety" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1360665512]
+[node name="JasminePatience" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=1360665512]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="JasmineTension" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=777925213]
+[node name="JasmineTrust" type="Label" parent="ColorRect/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" unique_id=777925213]
 layout_mode = 2
 size_flags_horizontal = 3
 

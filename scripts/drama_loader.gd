@@ -30,14 +30,25 @@ func _load_beats():
 		var beat_name  = lines[0].strip_edges().to_lower()
 		var directive  = ""
 		var characters = []
+		var in_directive = false
 
 		for i in range(1, lines.size()):
 			var line = lines[i].strip_edges()
+			if line == "":
+				continue
 			if line.begins_with("CHARACTERS:"):
 				var raw_chars = line.replace("CHARACTERS:", "").strip_edges()
 				for ch in raw_chars.split(","):
 					characters.append(ch.strip_edges())
-			elif line != "":
+				in_directive = false
+			elif line.begins_with("PURPOSE:") or line.begins_with("DIALOGUE RULES:"):
+				in_directive = true
+				var content = line.substr(line.find(":") + 1).strip_edges()
+				if content != "":
+					directive += content + " "
+			elif line.begins_with("EMOTIONAL STATE:") or line.begins_with("TRANSITIONS:"):
+				in_directive = false
+			elif in_directive:
 				directive += line + " "
 
 		beats[beat_name] = {

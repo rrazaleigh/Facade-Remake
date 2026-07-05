@@ -1,13 +1,7 @@
-# main.gd
-# Attach to the Main (Control) root node of main.tscn
 extends Control
-
-# ── CONFIG ─────────────────────────────────────────────────────────────────────
 
 const API_URL = "http://127.0.0.1:11434/api/chat"
 const MODEL   = "llama3.2:3b"
-
-# ── NODE REFERENCES ────────────────────────────────────────────────────────────
 
 @onready var history_vbox  : VBoxContainer   = $MarginContainer/VBoxContainer/HBoxContainer/Dialogue/DialogueHistory/HistoryVBox
 @onready var scroll        : ScrollContainer = $MarginContainer/VBoxContainer/HBoxContainer/Dialogue/DialogueHistory
@@ -15,40 +9,42 @@ const MODEL   = "llama3.2:3b"
 @onready var status_bar    : Label           = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/InputRow/VBoxContainer/StatusBar
 @onready var char_name     : Label           = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Characters/CharacterName
 @onready var emotion_label : Label           = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Characters/EmotionLabel
-@onready var trust_label   : Label           = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug/TrustLabel
-@onready var tension_label : Label           = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug/TensionLabel
-@onready var anxiety_label    : Label        = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug/AnxietyLabel
+@onready var state_label1  : Label           = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug/StateLabel1
+@onready var state_label2  : Label           = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug/StateLabel2
+@onready var state_label3  : Label           = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/CenterContainer/StateDebug/StateLabel3
 @onready var player_tone_label: Label        = $MarginContainer/VBoxContainer/VBoxContainer/HBoxContainer/InputRow/VBoxContainer/ToneLabel
 @onready var http          : HTTPRequest     = $HTTPRequest
 @onready var prev_char_btn : Button          = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Switch
 @onready var next_char_btn : Button          = $MarginContainer/VBoxContainer/HBoxContainer/Character/VBoxContainer/VBoxContainer/HBoxContainer/Switch2
 
-# ── DEBUG MENU REFS ───────────────────────────────────────────────────────────
-
-@onready var debug_window      : Window       = $Window
-@onready var beat_option       : OptionButton = $Window/VBoxContainer/BeatHBox/BeatOptionButton
-@onready var set_beat_btn      : Button       = $Window/VBoxContainer/BeatHBox/SetBeatButton
-@onready var dylan_trust_sb    : SpinBox      = $Window/VBoxContainer/DylanTrust/DylanTrustSpinBox
-@onready var dylan_anxiety_sb  : SpinBox      = $Window/VBoxContainer/DylanAnxiety/DylanAnxietySpinBox
-@onready var dylan_tension_sb  : SpinBox      = $Window/VBoxContainer/DylanTension/DylanTensionSpinBox
-@onready var jasmine_trust_sb  : SpinBox      = $Window/VBoxContainer/JasmineTrust/JasmineTrustSpinBox
-@onready var jasmine_anxiety_sb: SpinBox      = $Window/VBoxContainer/JasmineAnxiety/JasmineAnxietySpinBox
-@onready var jasmine_tension_sb: SpinBox      = $Window/VBoxContainer/JasmineTension/JasmineTensionSpinBox
-@onready var ending_option     : OptionButton = $Window/VBoxContainer/EndingHBox/EndingOptionButton
-@onready var trigger_end_btn   : Button       = $Window/VBoxContainer/EndingHBox/TriggerEndingButton
-@onready var close_debug_btn   : Button       = $Window/VBoxContainer/CloseButton
-
-# ── GAME STATE ─────────────────────────────────────────────────────────────────
+@onready var debug_window          : Window       = $Window
+@onready var beat_option           : OptionButton = $Window/VBoxContainer/BeatHBox/BeatOptionButton
+@onready var set_beat_btn          : Button       = $Window/VBoxContainer/BeatHBox/SetBeatButton
+@onready var dylan_mask_sb         : SpinBox      = $Window/VBoxContainer/DylanMask/DylanMaskSpinBox
+@onready var dylan_anxiety_sb      : SpinBox      = $Window/VBoxContainer/DylanAnxiety/DylanAnxietySpinBox
+@onready var dylan_attachment_sb   : SpinBox      = $Window/VBoxContainer/DylanAttachment/DylanAttachmentSpinBox
+@onready var dylan_trust_sb        : SpinBox      = $Window/VBoxContainer/DylanTrust/DylanTrustSpinBox
+@onready var dylan_hope_sb         : SpinBox      = $Window/VBoxContainer/DylanHope/DylanHopeSpinBox
+@onready var dylan_hostility_sb    : SpinBox      = $Window/VBoxContainer/DylanHostility/DylanHostilitySpinBox
+@onready var jasmine_suspicion_sb  : SpinBox      = $Window/VBoxContainer/JasmineSuspicion/JasmineSuspicionSpinBox
+@onready var jasmine_patience_sb   : SpinBox      = $Window/VBoxContainer/JasminePatience/JasminePatienceSpinBox
+@onready var jasmine_trust_sb      : SpinBox      = $Window/VBoxContainer/JasmineTrust/JasmineTrustSpinBox
+@onready var ending_option         : OptionButton = $Window/VBoxContainer/EndingHBox/EndingOptionButton
+@onready var trigger_end_btn       : Button       = $Window/VBoxContainer/EndingHBox/TriggerEndingButton
+@onready var close_debug_btn       : Button       = $Window/VBoxContainer/CloseButton
 
 var game_state = {
-	"dylan_trust":       50,
-	"dylan_anxiety":     30,
-	"dylan_tension":     40,
-	"jasmine_trust":     50,
-	"jasmine_anxiety":   30,
-	"jasmine_tension":   40,
-	"current_beat":      "arrival",
-	"turn":              0
+	"dylan_mask":          70,
+	"dylan_anxiety":       30,
+	"dylan_attachment":    60,
+	"dylan_trust":         50,
+	"dylan_hope":          40,
+	"dylan_hostility":     10,
+	"jasmine_suspicion":   20,
+	"jasmine_patience":    60,
+	"jasmine_trust":       50,
+	"current_beat":        "arrival",
+	"turn":                0
 }
 
 var conversation_history : Array  = []
@@ -66,13 +62,18 @@ var _char_emotions       : Dictionary = {"dylan": "neutral", "jasmine": "neutral
 
 const MAX_CONSECUTIVE    : int   = 3
 const BEAT_ORDER = [
-	"arrival", "small_talk", "cracks_showing",
-	"hostile_undercurrent", "hostile_escalation",
-	"the_confession", "jasmine_feels_it",
-	"ending_honest_growth", "ending_false_comfort",
-	"ending_return_to_past", "ending_toxic_spiral",
-	"ending_plot_twist", "resolution"
+	"arrival", "small_talk", "no_drama", "cracks_showing",
+	"jasmine_feels_it", "hostile_undercurrents", "hostile_escalation",
+	"confession", "personal_growth",
+	"ending_normal_night", "ending_jasmine_leaves", "ending_new_beginnings",
+	"ending_return_to_past", "ending_toxic_spiral", "ending_honest_growth",
+	"ending_plot_twist", "ending_dark", "game_over_kicked_out"
 ]
+
+const DYLAN_LABELS = ["Mask", "Anxiety", "Attachment"]
+const DYLAN_KEYS   = ["dylan_mask", "dylan_anxiety", "dylan_attachment"]
+const JASMINE_LABELS = ["Suspicion", "Patience", "Trust"]
+const JASMINE_KEYS   = ["jasmine_suspicion", "jasmine_patience", "jasmine_trust"]
 
 const EMOJI_MAP = {
 	"neutral":    "😐",
@@ -83,8 +84,6 @@ const EMOJI_MAP = {
 	"vulnerable": "🥺"
 }
 
-# ── INIT ───────────────────────────────────────────────────────────────────────
-
 func _ready():
 	print("Using Ollama at ", API_URL)
 
@@ -93,19 +92,21 @@ func _ready():
 	prev_char_btn.pressed.connect(_on_prev_char)
 	next_char_btn.pressed.connect(_on_next_char)
 
-	# Debug menu
 	for b in BEAT_ORDER:
 		beat_option.add_item(b)
 	beat_option.select(BEAT_ORDER.find(game_state.current_beat))
-	for e in ["ending_honest_growth", "ending_false_comfort", "ending_return_to_past", "ending_toxic_spiral", "ending_plot_twist", "resolution"]:
+	for e in ["ending_normal_night", "ending_jasmine_leaves", "ending_new_beginnings", "ending_return_to_past", "ending_toxic_spiral", "ending_honest_growth", "ending_plot_twist", "ending_dark"]:
 		ending_option.add_item(e)
 	set_beat_btn.pressed.connect(_on_debug_set_beat)
-	dylan_trust_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_trust"))
+	dylan_mask_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_mask"))
 	dylan_anxiety_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_anxiety"))
-	dylan_tension_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_tension"))
+	dylan_attachment_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_attachment"))
+	dylan_trust_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_trust"))
+	dylan_hope_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_hope"))
+	dylan_hostility_sb.value_changed.connect(_on_debug_state_changed.bind("dylan_hostility"))
+	jasmine_suspicion_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_suspicion"))
+	jasmine_patience_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_patience"))
 	jasmine_trust_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_trust"))
-	jasmine_anxiety_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_anxiety"))
-	jasmine_tension_sb.value_changed.connect(_on_debug_state_changed.bind("jasmine_tension"))
 	trigger_end_btn.pressed.connect(_on_debug_trigger_ending)
 	close_debug_btn.pressed.connect(_on_debug_close)
 	debug_window.visibility_changed.connect(_sync_debug_menu)
@@ -122,8 +123,6 @@ func _input(event):
 		if debug_window.visible:
 			_sync_debug_menu()
 
-# ── INPUT ──────────────────────────────────────────────────────────────────────
-
 func _on_send(_t = ""):
 	print("send triggered")
 	var msg = player_input.text.strip_edges()
@@ -137,7 +136,6 @@ func _on_send(_t = ""):
 	player_input.clear()
 	var pname = Globals.player_name if Globals.player_name != "" else "You"
 
-	# Check if player input is an action (*action*)
 	var is_action = msg.length() > 1 and msg.begins_with("*") and msg.ends_with("*")
 	if is_action:
 		_add_line(pname, msg, Color.DIM_GRAY)
@@ -147,8 +145,6 @@ func _on_send(_t = ""):
 	conversation_history.append({"role": "user", "content": msg})
 	_pending_user_index = conversation_history.size() - 1
 	_call_llm()
-
-# ── DEBUG COMMANDS ──────────────────────────────────────────────────────────────
 
 func _handle_debug_command(cmd: String):
 	player_input.clear()
@@ -197,8 +193,6 @@ func _handle_debug_command(cmd: String):
 	else:
 		_add_line("DEBUG", "Unknown command. Try !help", Color.RED)
 
-# ── DEBUG MENU HANDLERS ────────────────────────────────────────────────────────
-
 func _on_debug_set_beat():
 	var beat = BEAT_ORDER[beat_option.selected]
 	var dir = DramaLoader.get_directive(beat)
@@ -223,19 +217,19 @@ func _on_debug_close():
 func _sync_debug_menu():
 	if not debug_window.visible:
 		return
-	dylan_trust_sb.set_value_no_signal(game_state.dylan_trust)
+	dylan_mask_sb.set_value_no_signal(game_state.dylan_mask)
 	dylan_anxiety_sb.set_value_no_signal(game_state.dylan_anxiety)
-	dylan_tension_sb.set_value_no_signal(game_state.dylan_tension)
+	dylan_attachment_sb.set_value_no_signal(game_state.dylan_attachment)
+	dylan_trust_sb.set_value_no_signal(game_state.dylan_trust)
+	dylan_hope_sb.set_value_no_signal(game_state.dylan_hope)
+	dylan_hostility_sb.set_value_no_signal(game_state.dylan_hostility)
+	jasmine_suspicion_sb.set_value_no_signal(game_state.jasmine_suspicion)
+	jasmine_patience_sb.set_value_no_signal(game_state.jasmine_patience)
 	jasmine_trust_sb.set_value_no_signal(game_state.jasmine_trust)
-	jasmine_anxiety_sb.set_value_no_signal(game_state.jasmine_anxiety)
-	jasmine_tension_sb.set_value_no_signal(game_state.jasmine_tension)
 	var idx = BEAT_ORDER.find(game_state.current_beat)
 	if idx != -1:
 		beat_option.select(idx)
 
-# ── LLM CALL ───────────────────────────────────────────────────────────────────
-
-# ── OLLAMA _call_llm ──
 func _call_llm():
 	_set_waiting(true)
 	var messages = _build_ollama_messages()
@@ -311,8 +305,8 @@ DIRECTIVE: {directive}
 PLAYER NAME: {player_name}
 
 EMOTIONAL STATE:
-  Dylan:  trust={dt}  anxiety={da}  tension={dtn}
-  Jasmine: trust={jt}  anxiety={ja}  tension={jtn}
+  Dylan:  mask={dm}  anxiety={da}  attachment={dat}  trust={dt}  hope={dh}  hostility={dho}
+  Jasmine: suspicion={js}  patience={jp}  trust={jt}
 
 LAST PLAYER TONE: {last_tone}
 STORY SO FAR: {narrative}
@@ -326,7 +320,7 @@ Respond ONLY with a JSON object. No preamble, no explanation:
   "action":       "optional — describe a physical action (e.g. 'looks away, rubs his neck'). Use this instead of dialogue when the character is doing something non-verbal.",
   "speaker":      "dylan or jasmine (default dylan)",
   "emotion":      "neutral | warm | defensive | hostile | anxious | vulnerable",
-  "state_delta":  {{"dylan_trust": 0, "dylan_anxiety": 0, "dylan_tension": 0, "jasmine_trust": 0, "jasmine_anxiety": 0, "jasmine_tension": 0}},
+  "state_delta":  {{"dylan_mask": 0, "dylan_anxiety": 0, "dylan_attachment": 0, "dylan_trust": 0, "dylan_hope": 0, "dylan_hostility": 0, "jasmine_suspicion": 0, "jasmine_patience": 0, "jasmine_trust": 0}},
   "drama_signal":    "none | escalate | beat_complete | continue | game_over",
   "player_tone":     "the tone you classified for the player's message",
   "narrative_moment": "a short phrase describing what happened this turn (e.g. 'dylan_deflected', 'jasmine_probed', 'player_showed_support', 'tension_rose'). Be specific to the scene."
@@ -342,18 +336,21 @@ NARRATIVE: Use "narrative_moment" to tag what story development occurred each tu
 
 BEAT PROGRESSION: You control when the scene advances. Signal "beat_complete" when the current beat has run its course — when the key story beat has landed, the tension has shifted, or the conversation has naturally reached a new phase. Do not advance too quickly: let each beat breathe. But do not linger once the moment has passed. Trust your judgment as a storyteller.
 
-IMPORTANT: If the current beat starts with "ending_" or is "resolution", the story is concluding. Write a final, fitting exchange that closes the scene naturally. The game will end after this response.""".format({
+IMPORTANT: If the current beat starts with "ending_" or is "game_over_kicked_out", the story is concluding. Write a final, fitting exchange that closes the scene naturally. The game will end after this response.""".format({
 		"dylan_per":   dylan_per,
 		"jasmine_per": jasmine_per,
 		"tones":       tones,
 		"beat":        beat,
 		"directive":   directive,
-		"dt":          game_state.dylan_trust,
+		"dm":          game_state.dylan_mask,
 		"da":          game_state.dylan_anxiety,
-		"dtn":         game_state.dylan_tension,
+		"dat":         game_state.dylan_attachment,
+		"dt":          game_state.dylan_trust,
+		"dh":          game_state.dylan_hope,
+		"dho":         game_state.dylan_hostility,
+		"js":          game_state.jasmine_suspicion,
+		"jp":          game_state.jasmine_patience,
 		"jt":          game_state.jasmine_trust,
-		"ja":          game_state.jasmine_anxiety,
-		"jtn":         game_state.jasmine_tension,
 		"last_tone":   last_tone,
 		"summary":     history_summary if history_summary != "" else "The evening has just started.",
 		"present":     present,
@@ -362,9 +359,7 @@ IMPORTANT: If the current beat starts with "ending_" or is "resolution", the sto
 		"player_name": Globals.player_name
 	})
 
-# ── OLLAMA message builder ──
 func _build_ollama_messages() -> Array:
-	# Ollama takes the system prompt as a message, not a separate field
 	var messages = [{"role": "system", "content": _build_system_prompt()}]
 	messages.append_array(conversation_history.slice(
 		max(0, conversation_history.size() - 8),
@@ -372,9 +367,6 @@ func _build_ollama_messages() -> Array:
 	))
 	return messages
 
-# ── RESPONSE ───────────────────────────────────────────────────────────────────
-
-# ── OLLAMA _on_response ──
 func _on_response(result, response_code, _headers, body):
 	_set_waiting(false)
 
@@ -406,7 +398,7 @@ func _on_response(result, response_code, _headers, body):
 					failed = true
 				else:
 					content = content.strip_edges()
-				# Strip markdown code fences if present
+
 				if content.begins_with("```"):
 					var start = content.find("\n", 3)
 					if start != -1:
@@ -429,8 +421,6 @@ func _on_response(result, response_code, _headers, body):
 		conversation_history.remove_at(_pending_user_index)
 		_pending_user_index = -1
 
-# ── APPLY RESPONSE ─────────────────────────────────────────────────────────────
-
 func _apply_response(r: Dictionary):
 	_scene_transition = ""
 	var dialogue = r.get("dialogue", "...")
@@ -440,7 +430,6 @@ func _apply_response(r: Dictionary):
 	var speaker_name = "Dylan" if speaker == "dylan" else "Jasmine"
 	var char_color = Color.WHITE if speaker == "dylan" else Color.LIGHT_PINK
 
-	# Display action before dialogue if present
 	var action = r.get("action", "")
 	if action != null and action != "":
 		_add_line("", "*" + action + "*", char_color)
@@ -452,26 +441,20 @@ func _apply_response(r: Dictionary):
 	_viewing_character = speaker
 	_update_character_display()
 
-	# Store player tone from this turn
 	_last_player_tone = r.get("player_tone", "neutral")
 
-	# Apply state delta — always clamp, never trust raw LLM numbers
 	var delta = r.get("state_delta", {})
-	game_state.dylan_trust      = clamp(
-		game_state.dylan_trust    + int(delta.get("dylan_trust",    0)), 0, 100)
-	game_state.dylan_anxiety    = clamp(
-		game_state.dylan_anxiety  + int(delta.get("dylan_anxiety",  0)), 0, 100)
-	game_state.dylan_tension    = clamp(
-		game_state.dylan_tension  + int(delta.get("dylan_tension",  0)), 0, 100)
-	game_state.jasmine_trust    = clamp(
-		game_state.jasmine_trust  + int(delta.get("jasmine_trust",  0)), 0, 100)
-	game_state.jasmine_anxiety  = clamp(
-		game_state.jasmine_anxiety + int(delta.get("jasmine_anxiety", 0)), 0, 100)
-	game_state.jasmine_tension  = clamp(
-		game_state.jasmine_tension + int(delta.get("jasmine_tension", 0)), 0, 100)
+	game_state.dylan_mask        = clamp(game_state.dylan_mask       + int(delta.get("dylan_mask",        0)), 0, 100)
+	game_state.dylan_anxiety     = clamp(game_state.dylan_anxiety    + int(delta.get("dylan_anxiety",      0)), 0, 100)
+	game_state.dylan_attachment  = clamp(game_state.dylan_attachment + int(delta.get("dylan_attachment",   0)), 0, 100)
+	game_state.dylan_trust       = clamp(game_state.dylan_trust      + int(delta.get("dylan_trust",        0)), 0, 100)
+	game_state.dylan_hope        = clamp(game_state.dylan_hope       + int(delta.get("dylan_hope",         0)), 0, 100)
+	game_state.dylan_hostility   = clamp(game_state.dylan_hostility  + int(delta.get("dylan_hostility",    0)), 0, 100)
+	game_state.jasmine_suspicion = clamp(game_state.jasmine_suspicion+ int(delta.get("jasmine_suspicion",  0)), 0, 100)
+	game_state.jasmine_patience  = clamp(game_state.jasmine_patience + int(delta.get("jasmine_patience",   0)), 0, 100)
+	game_state.jasmine_trust     = clamp(game_state.jasmine_trust    + int(delta.get("jasmine_trust",      0)), 0, 100)
 	game_state.turn += 1
 
-	# Track narrative moment
 	var n_moment = r.get("narrative_moment", "")
 	if n_moment == null:
 		n_moment = ""
@@ -485,28 +468,27 @@ func _apply_response(r: Dictionary):
 	var signal_val = r.get("drama_signal", "none")
 	if signal_val == null:
 		signal_val = "none"
-	if signal_val == "game_over" or game_state.dylan_trust <= 5 or game_state.jasmine_trust <= 5 or game_state.dylan_tension >= 95 or game_state.jasmine_tension >= 95:
+	if signal_val == "game_over" or game_state.dylan_hostility >= 95 or game_state.jasmine_patience <= 5 or game_state.dylan_trust <= 5:
 		_compress_history(dialogue, speaker)
 		if signal_val == "game_over":
 			_trigger_game_over()
+		elif game_state.dylan_hostility >= 95:
+			_trigger_game_over("KICKED OUT", "Dylan had enough. The hostility in the room was suffocating. Before you could say another word, he showed you the door. Some doors don't open twice.")
 		elif game_state.dylan_trust <= 5:
-			_trigger_game_over("LOST TRUST", "Dylan doesn't trust you anymore. Whatever connection you once had, it's gone now. He looks at you like a stranger, and the night can't end soon enough.")
+			_trigger_game_over("TRUST BROKEN", "Dylan doesn't trust you anymore. Whatever connection you once had, it's gone now. He looks at you like a stranger, and the night can't end soon enough.")
 		else:
-			_trigger_game_over("TENSION BOILED OVER", "The evening became too much. The air was thick with things left unsaid, and somewhere along the way, the night broke. There was no coming back from it.")
+			_trigger_game_over("PATIENCE EXHAUSTED", "Jasmine's patience finally ran out. She saw enough, felt enough. The evening ended not with a fight, but with quiet resignation.")
 		return
 
 	_advance_drama(signal_val)
 	_compress_history(dialogue, speaker)
 
-	# Continue: let the LLM speak again without waiting for the player
 	if signal_val == "continue" and _continue_count < MAX_CONSECUTIVE:
 		_continue_count += 1
 		_call_llm()
 		return
 
 	_continue_count = 0
-
-# ── DRAMA MANAGER ──────────────────────────────────────────────────────────────
 
 func _set_transition(next_beat: String):
 	_scene_transition = DramaLoader.get_directive(next_beat)
@@ -519,14 +501,14 @@ func _advance_drama(signal_val: String):
 		var idx = BEAT_ORDER.find(beat)
 		if idx != -1 and idx < BEAT_ORDER.size() - 1:
 			var next = BEAT_ORDER[idx + 1]
-			if next.begins_with("ending_") or next == "resolution":
+			if next.begins_with("ending_") or next == "game_over_kicked_out":
 				_set_transition(next)
 				_add_line("— SCENE —", _scene_transition, Color.YELLOW)
 				_trigger_ending(next)
 				return
 			_set_transition(next)
 			return
-		elif beat == "kicked_out":
+		elif beat == "game_over_kicked_out":
 			_trigger_game_over()
 			return
 
@@ -535,47 +517,57 @@ func _trigger_game_over(ending_name := "KICKED OUT", ending_text := ""):
 		ending_text = "Dylan had enough. Before you could say another word, he showed you the door. You're out on the street, the night air cold against your face. Some doors don't open twice."
 	Globals.ending_name = ending_name
 	Globals.ending_text = ending_text
-	Globals.dylan_trust     = game_state.dylan_trust
-	Globals.dylan_anxiety   = game_state.dylan_anxiety
-	Globals.dylan_tension   = game_state.dylan_tension
-	Globals.jasmine_trust   = game_state.jasmine_trust
-	Globals.jasmine_anxiety = game_state.jasmine_anxiety
-	Globals.jasmine_tension = game_state.jasmine_tension
+	Globals.dylan_mask       = game_state.dylan_mask
+	Globals.dylan_anxiety    = game_state.dylan_anxiety
+	Globals.dylan_attachment = game_state.dylan_attachment
+	Globals.dylan_trust      = game_state.dylan_trust
+	Globals.dylan_hope       = game_state.dylan_hope
+	Globals.dylan_hostility  = game_state.dylan_hostility
+	Globals.jasmine_suspicion = game_state.jasmine_suspicion
+	Globals.jasmine_patience  = game_state.jasmine_patience
+	Globals.jasmine_trust     = game_state.jasmine_trust
 	get_tree().change_scene_to_file("res://game_over.tscn")
 
 func _trigger_ending(beat_name: String):
 	var endings = {
-		"ending_honest_growth":
-			["HONEST GROWTH",
-			"Dylan and Jasmine finally stopped pretending. The conversation was raw and uncomfortable, but something real shifted between them. It wasn't easy — but nothing worthwhile ever is."],
-		"ending_false_comfort":
-			["FALSE COMFORT",
-			"Everyone smiled. Everyone said the right things. But underneath the polite laughter, nothing was truly resolved. The cracks were plastered over, not repaired. They'll hold until the next dinner."],
+		"ending_normal_night":
+			["NORMAL NIGHT",
+			"The evening was pleasant. Everyone smiled, everyone ate, everyone said goodbye. Nothing was confronted, nothing was resolved. The tension stayed buried where no one had to look at it."],
+		"ending_jasmine_leaves":
+			["JASMINE LEAVES",
+			"Jasmine finally understood. She didn't shout or cry — she just quietly removed herself from the equation. She deserved more than being someone's second choice, and she knew it. Dylan was left alone with what he'd done."],
+		"ending_new_beginnings":
+			["NEW BEGINNINGS",
+			"Dylan accepted that neither Becca nor his past defines him anymore. He ended things with Jasmine respectfully and began the long, uncertain work of rebuilding his life. Hopeful, but bittersweet."],
 		"ending_return_to_past":
 			["RETURN TO PAST",
-			"Old habits won. Dylan and Jasmine slid back into familiar patterns like comfortable, worn-out clothes. Nothing changed — and that was exactly the problem."],
+			"Dylan convinced himself Becca was still the answer. He left Jasmine, already composing the message in his head. Whether she'd take him back was a question the night refused to answer."],
 		"ending_toxic_spiral":
 			["TOXIC SPIRAL",
-			"The evening curdled into something ugly. Accusations flew, old wounds reopened, and the night ended with more damage than anyone could repair. Some relationships don't break all at once — they rot from the inside."],
+			"Dylan stayed with Jasmine for comfort while clinging to Becca in his heart. The lies grew smoother, the guilt quieter. The player walked away knowing they'd watched someone choose the easy wound over the hard truth."],
+		"ending_honest_growth":
+			["HONEST GROWTH",
+			"Dylan admitted everything. Jasmine didn't forgive him — not yet. But for the first time, there was honesty between them. Hope existed, fragile and real. Nothing was fixed. But nothing was fake anymore."],
 		"ending_plot_twist":
 			["PLOT TWIST",
-			"Nothing was what it seemed tonight. The truth that surfaced changed everything the player thought they knew about Dylan, Jasmine, and the life they've built together."],
-		"resolution":
-			["RESOLUTION",
-			"The night reached its natural end. Goodbyes were said at the door. Whatever happens next is between Dylan and Jasmine — the player was just a witness."]
+			"In the middle of the conversation, Dylan stumbled onto a question he'd never asked himself: were his feelings for Becca ever real, or just the safest thing he knew? He didn't have the answer. But he finally started looking for it."],
+		"ending_dark":
+			["DARK ENDING",
+			"After the player left, Dylan sat alone in the quiet apartment. The weight of everything he'd been running from finally caught up. There were no goodbyes, no dramatic gestures — just a silence that would last forever."]
 	}
 	var data = endings.get(beat_name, ["ENDING", "The night came to a close."])
 	Globals.ending_name = data[0]
 	Globals.ending_text = data[1]
-	Globals.dylan_trust     = game_state.dylan_trust
-	Globals.dylan_anxiety   = game_state.dylan_anxiety
-	Globals.dylan_tension   = game_state.dylan_tension
-	Globals.jasmine_trust   = game_state.jasmine_trust
-	Globals.jasmine_anxiety = game_state.jasmine_anxiety
-	Globals.jasmine_tension = game_state.jasmine_tension
+	Globals.dylan_mask       = game_state.dylan_mask
+	Globals.dylan_anxiety    = game_state.dylan_anxiety
+	Globals.dylan_attachment = game_state.dylan_attachment
+	Globals.dylan_trust      = game_state.dylan_trust
+	Globals.dylan_hope       = game_state.dylan_hope
+	Globals.dylan_hostility  = game_state.dylan_hostility
+	Globals.jasmine_suspicion = game_state.jasmine_suspicion
+	Globals.jasmine_patience  = game_state.jasmine_patience
+	Globals.jasmine_trust     = game_state.jasmine_trust
 	get_tree().change_scene_to_file("res://game_over.tscn")
-
-# ── HISTORY COMPRESSION ────────────────────────────────────────────────────────
 
 func _compress_history(last_dialogue: String, speaker: String = "dylan"):
 	conversation_history.append({"role": "assistant", "speaker": speaker, "content": last_dialogue})
@@ -600,15 +592,12 @@ func _compress_history(last_dialogue: String, speaker: String = "dylan"):
 			conversation_history.size()
 		)
 
-	# Prevent memory leak: trim oldest labels when they exceed limit
 	var excess = history_vbox.get_child_count() - 40
 	if excess > 0:
 		for j in range(min(excess, 10)):
 			var child = history_vbox.get_child(0)
 			history_vbox.remove_child(child)
 			child.queue_free()
-
-# ── UI HELPERS ─────────────────────────────────────────────────────────────────
 
 func _add_line(speaker: String, text: String, color: Color):
 	if not is_inside_tree():
@@ -657,10 +646,11 @@ func _update_character_display():
 	emotion_label.text = "%s %s" % [EMOJI_MAP.get(emo, "😐"), emo]
 
 func _update_debug():
-	var prefix = _viewing_character
-	trust_label.text    = "Trust:   %d" % game_state.get(prefix + "_trust",     0)
-	anxiety_label.text  = "Anxiety: %d" % game_state.get(prefix + "_anxiety",   0)
-	tension_label.text  = "Tension: %d" % game_state.get(prefix + "_tension",   0)
+	var labels = DYLAN_LABELS if _viewing_character == "dylan" else JASMINE_LABELS
+	var keys   = DYLAN_KEYS   if _viewing_character == "dylan" else JASMINE_KEYS
+	state_label1.text = "%s: %d" % [labels[0], game_state.get(keys[0], 0)]
+	state_label2.text = "%s: %d" % [labels[1], game_state.get(keys[1], 0)]
+	state_label3.text = "%s: %d" % [labels[2], game_state.get(keys[2], 0)]
 	player_tone_label.text = "Player tone: %s" % _last_player_tone
 	if debug_window.visible:
 		_sync_debug_menu()
