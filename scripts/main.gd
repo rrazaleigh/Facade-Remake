@@ -325,7 +325,7 @@ Respond ONLY with a JSON object. No preamble, no explanation:
   "action":       "optional — describe a physical action (e.g. 'looks away, rubs his neck'). Use this instead of dialogue when the character is doing something non-verbal.",
   "speaker":      "dylan or jasmine (default dylan)",
   "emotion":      "neutral | warm | defensive | hostile | anxious | vulnerable",
-  "state_delta":  {{"dylan_mask": 0, "dylan_anxiety": 0, "dylan_attachment": 0, "dylan_trust": 0, "dylan_hope": 0, "dylan_hostility": 0, "jasmine_suspicion": 0, "jasmine_patience": 0, "jasmine_trust": 0}},
+  "state_delta":  {{"dylan_trust": -2, "dylan_anxiety": 3}} (only include variables that change; all others default to 0 — do not add variables with 0 value),
   "drama_signal":    "none | escalate | beat_complete | continue | game_over",
   "player_intent":   "hostile | guilty | defensive | probing | supportive | curious | dismissive | neutral — the resolved intent after precedence + confidence rules",
   "narrative_moment": "a short phrase describing what happened this turn (e.g. 'dylan_deflected', 'jasmine_probed', 'player_showed_support', 'tension_rose'). Be specific to the scene."
